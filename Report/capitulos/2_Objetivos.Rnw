@@ -33,3 +33,8 @@ el modelado sea exitoso será fundamental. Además, los investigadores ofrecen
 todo el código del extractor de datos, por lo que la comprensión de los datos
 ha sido fluida, además de la facilidad de realizar un trabajo basado en estos
 datos al tener toda la información disponible.
+
+Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
+se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
+de esta índole. Selección, preprocesado, transformación, modelado,
+interpretación y evaluación. \improvement{Decir en qué sección está cada paso}{}

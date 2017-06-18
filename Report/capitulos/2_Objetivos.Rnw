@@ -15,6 +15,13 @@ de metaheurísticas para optimizar planes de un bot podría ser acelerado
 si se sabe de antemano con una precisión alta quién va a ganar, ya que este
 enfoque se basa en ensayo y error.
 
+Además, no es sólo importante predecir. También un aspecto muy importante
+es conseguir determinar qué características de la partida hacen que la victoria
+se decida para un jugador en concreto. Analizar los factores más importantes
+de una partida puede apoyar mucho a los demás enfoques que se les ha dado
+al problema de la creación de agentes autónomos que consigan la victoria en
+los entornos más complejos posibles.
+
 Para ello se utilizará
 una base de datos muy completa, pero no tan estudiada por parte de los
 investigadores, \citep{DBLP:conf/flairs/RobertsonW14}.

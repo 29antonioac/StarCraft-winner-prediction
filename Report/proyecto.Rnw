@@ -54,28 +54,29 @@
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
-\newcommand{\myTitle}{Estudio de optimización con incertidumbre en juegos de estrategia\xspace}
-\newcommand{\myDegree}{Doble Grado en Ingeniería Informática y Matemáticas\xspace}
-\newcommand{\myName}{Antonio Álvarez Caballero\xspace}
-\newcommand{\myProf}{Juan Julián Merelo Guervós\xspace}
-% \newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
-%\newcommand{\mySupervisor}{Put name here\xspace}
+\newcommand{\myTitle}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
+\newcommand{\myTitleEng}{Results prediction of real time strategy games' matches}
+\newcommand{\myDegree}{Máster en Ciencia de Datos e Ingeniería de Computadores}
+\newcommand{\myName}{Antonio Álvarez Caballero}
+\newcommand{\myProf}{Juan Julián Merelo Guervós}
+\newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación}
+\newcommand{\myKeywordsEng}{Prediction, learning from data, classification, strategy, planification}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
-Telecomunicación y Facultad de Ciencias\xspace}
+Telecomunicación}
 \newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
-Telecomunicación y Facultad de Ciencias\xspace}
-\newcommand{\myDepartment}{Departamento de Arquitectura y Tecnología de Computadores\xspace}
-\newcommand{\myUni}{\protect{Universidad de Granada}\xspace}
-\newcommand{\myLocation}{Granada\xspace}
+Telecomunicación}
+\newcommand{\myDepartment}{Departamento de Arquitectura y Tecnología de Computadores}
+\newcommand{\myUni}{\protect{Universidad de Granada}}
+\newcommand{\myLocation}{Granada}
 \newcommand{\myTime}{\today\xspace}
-\newcommand{\myVersion}{Versión 0.9\xspace}
+\newcommand{\myVersion}{Versión 0.9}
 
 
 \hypersetup{
 pdfauthor = {\myName (analca3 (en) correo (punto) ugr (punto) es)},
 pdftitle = {\myTitle},
 pdfsubject = {},
-pdfkeywords = {Estrategia, incertidumbre, aprendizaje sobre datos, predicción, clasificación},
+pdfkeywords = {\myKeywords},
 pdfcreator = {LaTeX con el paquete hyperref},
 pdfproducer = {pdflatex},
 colorlinks,
@@ -207,8 +208,6 @@ citecolor = Violet
 
 \newcommand{\sectionbreak}{\clearpage}
 \newcommand{\dni}{\Sexpr{Sys.getenv("DNI", unset = "\\_\\_\\_\\_\\_\\_\\_\\_\\_")}}
-\newcommand{\titulo}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
-\newcommand{\tituloEng}{Results prediction of real time strategy games' matches}
 
 
 \usepackage{pdfpages}

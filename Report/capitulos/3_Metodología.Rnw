@@ -1,0 +1,20 @@
+\chapter{Metodología}
+\label{cap:metodologia}
+
+Las principales herramientas utilizadas en este trabajo han sido las siguientes.
+
+\begin{itemize}
+  \item \LaTeX \, como procesador de textos científico.
+  \item \emph{Scala} y \emph{Spark} como ecosistema para el tratamiento de datos
+  en entornos \emph{Big Data}.
+  \item \emph{R} y \emph{ggplot2} para graficar resultados. Junto a \emph{knitr},
+  este documento sigue el paradigma de \emph{programación literaria},
+  uniendo documento y programa, siendo muy cómodo de escribir y leer.
+  \item MariaDB como sistema gestor de bases de datos relacionales (SQL).
+\end{itemize}
+
+Se han escogido estas herramientas por ser el estado del arte en cada uno de los
+ámbitos para los que fueron desarrolladas. En particular, con \emph{Scala}
+y \emph{Spark} se consigue tratamiento de datos en entornos \emph{Big Data} de manera
+transparente al usuario, ofreciendo un desarrollo similar en entornos
+\unsure{es la palabra más adecuada?}{centralizados} y distribuidos.

@@ -18,3 +18,97 @@ Se han escogido estas herramientas por ser el estado del arte en cada uno de los
 y \emph{Spark} se consigue tratamiento de datos en entornos \emph{Big Data} de manera
 transparente al usuario, ofreciendo un desarrollo similar en entornos
 \unsure{es la palabra más adecuada?}{centralizados} y distribuidos.
+
+\section{Selección de los datos}
+\label{sec:seleccion}
+
+Los datos utilizados se han cogido de \citep{DBLP:conf/flairs/RobertsonW14},
+que con su trabajo ofrecen seis bases de datos relacionales de partidas dos
+contra dos, con las distintas combinaciones de razas que ofrece el juego.
+
+\begin{figure}
+  \label{fig:database}
+  \centering
+  \includegraphics[width=\textwidth]{figure/Robertson14DatabaseDiagram.pdf}
+  \caption{Diagrama Entidad-Relación que modela cada una de las bases de datos.}
+\end{figure}
+
+En la \improvement{¿Por qué enlaza a la sección?}{figura~\ref{fig:database}} se puede ver el diagrama Entidad-Relación de
+las bases de datos que contienen las partidas. Así que lo primero que hay que
+preguntarse es qué variables cogemos y cómo las organizamos. El objetivo de este
+paso es conseguir una tabla de la forma filas por columnas, de manera que pueda
+ser interpretable por cualquier algoritmo clásico de aprendizaje.
+
+La propuesta es la siguiente: cada fila del conjunto de datos va a ser un
+instante de la partida, que estará compuesto por los recursos de cada jugador.
+Es un enfoque distinto a la mayoría de los que se trabajan, como se ha comentado
+en la sección~\ref{sec:introduccion}.
+A primera vista parece sencillo, pero se verá que conseguir información sobre
+las unidades de cada jugador no va a ser tarea fácil.
+
+\begin{figure}
+  \label{fig:databaseSelection}
+  \centering
+  \includegraphics[width=\textwidth]{figure/Robertson14DatabaseDiagramSeleccion.pdf}
+  \caption{Variables seleccionadas de las bases de datos.}
+\end{figure}
+
+En la \improvement{¿Por qué enlaza a la 3.1?}{figura~\ref{fig:databaseSelection}} ve pueden ver las variables
+seleccionadas, que se explican en las siguientes líneas. Posteriormente se
+procederá a explicar cómo se han extraído dichas características.
+
+Las características seleccionadas son, principalmente, los recursos de cada
+jugador, sus unidades (que se cuantifican no según el número sino según la
+suma de unos determinados valores que tiene cada unidad, dependiendo de su
+importancia) y sus edificios, además de las observaciones de estos valores que
+tiene un jugador del otro. Por último, también se tienen en cuenta el valor
+que cada jugador cree que queda de los recursos del mapa.
+
+Los detalles de las características seleccionadas según cada tabla son:
+
+\begin{itemize}
+  \item replay: Esta tabla contiene datos asociados a cada partida.
+  \begin{itemize}
+    \item ReplayID: Identificador de cada partida.
+    \item Duration: Duración (en frames) de cada partida. 15 frames equivalen a 1 segundo.
+  \end{itemize}
+  \item playerreplay: Esta tabla contiene datos asociados a un jugador en una partida.
+  \begin{itemize}
+    \item PlayerReplayID: Identificador de un jugador en una partida.
+    \item ReplayID: Identificador de partida asociado.
+    \item Winner: Ganador de cada partida.
+  \end{itemize}
+  \item resourcechange: Esta tabla contiene datos asociados a cambios en los recursos de un jugador.
+  \begin{itemize}
+    \item PlayerReplayID: Identificador del jugador que produce un cambio.
+    \item Frame: Frame en el que se produce un cambio.
+    \item Minerals: Cantidad de minerales que tiene un jugador en ese momento.
+    \item Gas: Cantidad de gas que tiene un jugador en ese momento.
+    \item Supply: Capacidad de carga del jugador.
+    \item TotalMinerals: Cantidad total de minerales que ha obtenido un jugador, sin contar gastos.
+    \item TotalGas: Cantidad total de gas que ha obtenido un jugador, sin contar gastos.
+    \item TotalSupply: Capacidad que ha obtenido un jugador, sin contar gastos.
+  \end{itemize}
+  \item regionvaluechange: Esta tabla contiene datos asociados a cambios de un jugador
+  en una región del mapa determinada. Cada \emph{value}, que llamaremos de aquí en adelante
+  \emph{valor}, es la suma del precio de una unidad en Minerales y Gas.
+  \begin{itemize}
+    \item PlayerReplayID: Identificador del jugador que produce un cambio.
+    \item RegionID: Identificador de la región del mapa donde se produce un cambio.
+    \item Frame: Frame en el que se produce el cambio.
+    \item GroundUnitValue: Valor de las unidades terrestres en esta región.
+    \item BuildingValue: Valor de las construcciones en esta región.
+    \item AirUnitValue: Valor de las unidades aéreas en esta región.
+    \item EnemyGroundUnitValue: Valor de las unidades terrestres del enemigo en esta región.
+    Este valor es estimado, sólo se conoce lo que el jugador puede ver del enemigo.
+    \item EnemyBuildingValue: Valor de las construcciones del enemigo en esta región.
+    Este valor es estimado, sólo se conoce lo que el jugador puede ver del enemigo.
+    \item EnemyAirUnitValue: Valor de las unidades aéreas del enemigo en esta región.
+    Este valor es estimado, sólo se conoce lo que el jugador puede ver del enemigo.
+    \item ResourceValue: Valor de los recursos en esta región. Este valor es estimado,
+    sólo se conoce lo que el jugador puede ver del mapa. Si el jugador no conoce una zona, estima que los recursos restantes es la totalidad de lo disponible en la región.
+  \end{itemize}
+\end{itemize}
+
+Una vez decididas las variables que vamos a tomar, se pasará a manejar las
+bases de datos para conseguirlas de la manera más limpia posible.

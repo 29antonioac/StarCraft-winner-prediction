@@ -27,33 +27,43 @@ que con su trabajo ofrecen seis bases de datos relacionales de partidas dos
 contra dos, con las distintas combinaciones de razas que ofrece el juego.
 
 \begin{figure}
-  \label{fig:database}
   \centering
   \includegraphics[width=\textwidth]{figure/Robertson14DatabaseDiagram.pdf}
   \caption{Diagrama Entidad-Relación que modela cada una de las bases de datos.}
+  \label{fig:database}
 \end{figure}
 
-En la \improvement{¿Por qué enlaza a la sección?}{figura~\ref{fig:database}} se puede ver el diagrama Entidad-Relación de
-las bases de datos que contienen las partidas. Así que lo primero que hay que
-preguntarse es qué variables cogemos y cómo las organizamos. El objetivo de este
+En la figura~\ref{fig:database} se puede ver el diagrama Entidad-Relación de
+las bases de datos que contienen las partidas. En primer lugar hay que
+comprender los datos que se tienen para saber de qué conocimiento se parte.
+Este paso ha sido sencillo gracias a lo dicho en el capítulo~\ref{cap:objetivos},
+el que el trabajo de \citep{DBLP:conf/flairs/RobertsonW14} sea libre facilita
+mucho esta tarea. La mayoría de características comparten nombre con atributos
+propios del juego extraídos de la API más utilizada para trabajar con
+\emph{StarCraft}, la \fnurl{\emph{BWAPI}}{http://bwapi.github.io/}. Otros datos
+son derivados que han calculado los investigadores, como la distancia a la base
+en un determinado momento.
+
+En siguiente lugar, hay que ver
+qué variables se cogen y cómo se organizan. El objetivo de este
 paso es conseguir una tabla de la forma filas por columnas, de manera que pueda
 ser interpretable por cualquier algoritmo clásico de aprendizaje.
 
 La propuesta es la siguiente: cada fila del conjunto de datos va a ser un
 instante de la partida, que estará compuesto por los recursos de cada jugador.
 Es un enfoque distinto a la mayoría de los que se trabajan, como se ha comentado
-en la sección~\ref{sec:introduccion}.
+en el capítulo~\ref{cap:introduccion}.
 A primera vista parece sencillo, pero se verá que conseguir información sobre
 las unidades de cada jugador no va a ser tarea fácil.
 
 \begin{figure}
-  \label{fig:databaseSelection}
   \centering
   \includegraphics[width=\textwidth]{figure/Robertson14DatabaseDiagramSeleccion.pdf}
   \caption{Variables seleccionadas de las bases de datos.}
+  \label{fig:databaseSelection}
 \end{figure}
 
-En la \improvement{¿Por qué enlaza a la 3.1?}{figura~\ref{fig:databaseSelection}} ve pueden ver las variables
+En la figura~\ref{fig:databaseSelection} ve pueden ver las variables
 seleccionadas, que se explican en las siguientes líneas. Posteriormente se
 procederá a explicar cómo se han extraído dichas características.
 
@@ -112,3 +122,69 @@ Los detalles de las características seleccionadas según cada tabla son:
 
 Una vez decididas las variables que vamos a tomar, se pasará a manejar las
 bases de datos para conseguirlas de la manera más limpia posible.
+
+\section{Preprocesamiento y transformación de los datos}
+\label{sec:preprocesamiento}
+
+Como se ha comentado anteriormente, los datos vienen organizados en seis bases
+de datos relacionales, de tipo SQL, por lo que se hace necesario el uso de un
+\emph{Sistema Gestor de Bases de Datos}. Como se comentó al principio de esta
+sección, se ha elegido \emph{MariaDB} por ser la implementación libre de la
+archiconocida \emph{MySQL}. \unsure{Si hay tiempo, ¿por qué no?}{No} se detallará
+el montaje y puesta en marcha de esto, aunque es de gran importancia
+hacer saber que para cualquier científico de datos, manejarse con el
+levantamiento de este tipo de servicios también es muy importante.
+
+El procedimiento para extraer las partidas no es más que una consulta para cada
+partida de la base de datos. Esta consulta es algo compleja, por lo que se
+intentará explicar de la manera más clara posible.
+
+Lo primero será concentrarse en una partida: después se iterará sobre todas
+con un procedimiento. Se podría haber resuelto todo con una sola consulta, pero
+habría complicado un poco más su escritura y depuración. Una vez tenemos un
+\emph{ReplayID} en concreto, se toma su duración \emph{Duration} y los
+jugadores que compiten en ella \emph{PlayerReplayID}. Se tomará como el primero
+el que tenga un \emph{PlayerReplayID} más pequeño, aunque se verá más adelante
+que no habrá ninguna ventaja para ningún jugador.
+
+Ahora hay que tomar una decisión importante. Tras un primer vistazo a los datos,
+se observa que los instantes de tiempo \emph{Frame} en los que se registra
+algún cambio no tienen por qué ser ni siquiera
+parecidos, ni entre jugadores ni entre cambios de unidades o recursos.
+Por tanto, se procede de la siguiente manera: para no perjudicar a ninguno de
+los jugadores, en el conjunto de datos final los instantes de tiempo tomados
+como referencia serán aquellos instantes en los que exista un cambio en los
+recursos, que no unidades, de cada uno de los dos jugadores.
+
+Esto implica directamente otra pequeña decisión al diseñar la consulta. Como
+se ha comentado, los instantes de tiempo de los cambios en las unidades de
+un jugador no tienen por qué coincidir con los cambios en recursos (es más,
+es muy poco probable que coincidan exactamente). Por lo tanto, al tomar como
+referencia los instantes de tiempo \emph{Frame} de cambios de recursos, hay
+que buscar la manera de tomar el estado actual de las unidades de cada jugador
+más precisa posible en el instante determinado. Esto se soluciona fácilmente
+tomando el último valor de las unidades en el tiempo: se tomará el valor de
+las unidades en el instante de tiempo más grande posible, pero más pequeño
+que el actual.
+
+Una vez se tienen las referencias en tl tiempo, falta un detalle importante:
+como se ha comentado en la sección~\ref{sec:seleccion}, los cambios registrados
+en los valores de las unidades son a nivel de una determinada región del mapa.
+Por tanto, para tomar el valor total de las unidades de un jugador, hay que
+sumar los valores en todas las regiones del mapa.
+
+Además de todo esto, existe una última cuestión que se ha tenido que resolver.
+Al tomar datos de un jugador en un instante de tiempo para el que dicho jugador
+no tiene información, dichos datos desconocidos se rellenan con \texttt{NULL}.
+Sería sencillo dejarlos así y en una siguiente fase, imputar dichos datos
+perdidos con cualquier algoritmo clásico. Pero existe una solución mejor y
+mucho más lógica para este problema: si para un jugador, un dato no existe
+porque no ha habido un cambio en ese instante de tiempo, significa que tendrá
+los mismos recursos/unidades/etc que en su anterior cambio. Por tanto, sólo
+hay que tomar el valor no nulo anterior más próximo para cada una de las
+variables de la tabla.
+
+
+
+\section{Modelado}
+\label{sec:modelado}

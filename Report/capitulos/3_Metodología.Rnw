@@ -184,6 +184,15 @@ los mismos recursos/unidades/etc que en su anterior cambio. Por tanto, sólo
 hay que tomar el valor no nulo anterior más próximo para cada una de las
 variables de la tabla.
 
+Una vez con todos los datos bien formados, sólo hay que añadir el
+\emph{ReplayID}, la duración de la partida \emph{Duration}, el ganador
+\emph{Winner} y las razas implicadas. De esta manera ya tenemos todos los
+datos de una partida bien formados, sin valores perdidos y listos para ser
+tratados como un conjunto de datos sobre cualquier software. Como se ha
+comentado anteriormente, sólo hay que iterar por los distintos \emph{ReplayID}
+para conseguir los datos de todas las partidas de cada una de las seis bases
+de datos.
+
 
 
 \section{Modelado}

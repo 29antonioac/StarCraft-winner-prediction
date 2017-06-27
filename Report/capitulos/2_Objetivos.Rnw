@@ -1,0 +1,40 @@
+\chapter{Objetivos}
+\label{cap:objetivos}
+
+En este trabajo se propone ampliar el estado del arte en el ámbito de la
+predicción del resultado de partidas de este videojuego, utilizando aprendizaje
+supervisado sobre un conjunto muy grande y heterogéneo de partidas de
+competición. El caso más parecido es el de
+\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el conjunto de datos es
+bastante más pequeño y controlado que el usado en este trabajo.
+
+Mejorar la predicción no sólo mejoraría el rendimiento de cualquiera de las
+ideas presentadas anteriormente, sino que permitiría abordar otras nuevas
+que no son posibles sin una predicción más precisa. Por ejemplo, el uso
+de metaheurísticas para optimizar planes de un bot podría ser acelerado
+si se sabe de antemano con una precisión alta quién va a ganar, ya que este
+enfoque se basa en ensayo y error.
+
+Además, no es sólo importante predecir. También un aspecto muy importante
+es conseguir determinar qué características de la partida hacen que la victoria
+se decida para un jugador en concreto. Analizar los factores más importantes
+de una partida puede apoyar mucho a los demás enfoques que se les ha dado
+al problema de la creación de agentes autónomos que consigan la victoria en
+los entornos más complejos posibles.
+
+Para ello se utilizará
+una base de datos muy completa, pero no tan estudiada por parte de los
+investigadores, \citep{DBLP:conf/flairs/RobertsonW14}.
+Contiene miles de partidas dos contra dos de todas las combinaciones de
+razas, organizadas como un conjunto de seis bases de datos relacionales.
+Estos datos son precisos y muy completos,
+por lo que la extracción de datos y la posterior organización de estos para que
+el modelado sea exitoso será fundamental. Además, los investigadores ofrecen
+todo el código del extractor de datos, por lo que la comprensión de los datos
+ha sido fluida, además de la facilidad de realizar un trabajo basado en estos
+datos al tener toda la información disponible.
+
+Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
+se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
+de esta índole. Selección, preprocesado, transformación, modelado,
+interpretación y evaluación. \improvement{Decir en qué sección está cada paso}{}

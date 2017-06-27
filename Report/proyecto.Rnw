@@ -1,0 +1,327 @@
+\documentclass[a4paper,11pt]{book}
+%\documentclass[a4paper,twoside,11pt,titlepage]{book}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[british, spanish]{babel}
+\usepackage{float}
+
+% \usepackage[style=list, number=none]{glossary} %
+\usepackage{titlesec}
+%\usepackage{pailatino}
+
+\decimalpoint
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{\esperiod}{-1}}
+\makeatletter
+\addto\shorthandsspanish{\let\esperiod\es@period@code}
+\makeatother
+
+% \selectlanguage{spanish}
+
+%\usepackage[chapter]{algorithm}
+\RequirePackage{verbatim}
+%\RequirePackage[Glenn]{fncychap}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{afterpage}
+\usepackage{amsfonts}
+\usepackage{longtable}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{wasysym}
+\usepackage{cancel}
+\renewcommand\qedsymbol{\smiley{}}
+
+\usepackage[pdfborder={000}, colorlinks]{hyperref} %referencia
+
+%%%%% TodoNotes
+\usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+%%%%%
+
+\newcommand\fnurl[2]{%
+  \href{#2}{#1}\footnote{\url{#2}}%
+}
+
+% ********************************************************************
+% Re-usable information
+% ********************************************************************
+\newcommand{\myTitle}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
+\newcommand{\myTitleEng}{Results prediction of real time strategy games' matches}
+\newcommand{\myDegree}{Máster en Ciencia de Datos e Ingeniería de Computadores}
+\newcommand{\myName}{Antonio Álvarez Caballero}
+\newcommand{\myProf}{Juan Julián Merelo Guervós}
+\newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación}
+\newcommand{\myKeywordsEng}{Prediction, learning from data, classification, strategy, planification}
+\newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
+Telecomunicación}
+\newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
+Telecomunicación}
+\newcommand{\myDepartment}{Departamento de Arquitectura y Tecnología de Computadores}
+\newcommand{\myUni}{\protect{Universidad de Granada}}
+\newcommand{\myLocation}{Granada}
+\newcommand{\myTime}{\today\xspace}
+\newcommand{\myVersion}{Versión 0.9}
+
+
+\hypersetup{
+pdfauthor = {\myName (analca3 (en) correo (punto) ugr (punto) es)},
+pdftitle = {\myTitle},
+pdfsubject = {},
+pdfkeywords = {\myKeywords},
+pdfcreator = {LaTeX con el paquete hyperref},
+pdfproducer = {pdflatex},
+colorlinks,
+urlcolor = blue,
+linkcolor = blue,
+citecolor = Violet
+}
+
+%\hyphenation{}
+
+
+%\usepackage{doxygen/doxygen}
+%\usepackage{pdfpages}
+\usepackage{url}
+\usepackage{colortbl,longtable}
+\usepackage[stable]{footmisc}
+%\usepackage{index}
+
+\usepackage[round]{natbib}   % omit 'round' option if you prefer square brackets
+\bibliographystyle{plainnat}
+
+%\makeindex
+%\usepackage[style=long, cols=2,border=plain,toc=true,number=none]{glossary}
+% \makeglossary
+
+% Definición de comandos que me son tiles:
+%\renewcommand{\indexname}{Índice alfabético}
+%\renewcommand{\glossaryname}{Glosario}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyhead[RO,LE]{\textbf{\thepage}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
+
+\setlength{\headheight}{1.5\headheight}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+%Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
+%simplemente poniendo \begin{teorema} \end{teorema} ...
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}[chapter]
+\newtheorem{corolario}{Corolario}[chapter]
+\newtheorem{lema}{Lema}[chapter]
+\theoremstyle{definition}
+\newtheorem{ejemplo}{Ejemplo}[chapter]
+\newtheorem{definicion}{Definición}[chapter]
+
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+\definecolor{gray30}{gray}{.94}
+
+\lstset{ frame=Ltb,
+     framerule=0.5pt,
+     aboveskip=0.5cm,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     framexleftmargin=0.1cm,
+     framesep=0pt,
+     rulesep=.4pt,
+     backgroundcolor=\color{gray97},
+     rulesepcolor=\color{black},
+     %
+     stringstyle=\ttfamily,
+     showstringspaces = false,
+     basicstyle=\scriptsize\ttfamily,
+     commentstyle=\color{gray45},
+     keywordstyle=\bfseries,
+     %
+     numbers=left,
+     numbersep=6pt,
+     numberstyle=\tiny,
+     numberfirstline = false,
+     breaklines=true,
+   }
+
+% minimizar fragmentado de listados
+\lstnewenvironment{listing}[1][]
+   {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
+
+\lstdefinestyle{CodigoC}
+   {
+	basicstyle=\scriptsize,
+	frame=single,
+	language=C,
+	numbers=left
+   }
+\lstdefinestyle{CodigoC++}
+   {
+	basicstyle=\small,
+	frame=single,
+	backgroundcolor=\color{gray30},
+	language=C++,
+	numbers=left
+   }
+
+
+\lstdefinestyle{Consola}
+   {basicstyle=\scriptsize\bf\ttfamily,
+    backgroundcolor=\color{gray30},
+    frame=single,
+    numbers=none
+   }
+
+
+\newcommand{\bigrule}{\titlerule[0.5mm]}
+
+
+%Para conseguir que en las páginas en blanco no ponga cabecerass
+\makeatletter
+\def\clearpage{%
+  \ifvmode
+    \ifnum \@dbltopnum =\m@ne
+      \ifdim \pagetotal <\topskip
+        \hbox{}
+      \fi
+    \fi
+  \fi
+  \newpage
+  \thispagestyle{empty}
+  \write\m@ne{}
+  \vbox{}
+  \penalty -\@Mi
+}
+\makeatother
+
+\newcommand{\sectionbreak}{\clearpage}
+\newcommand{\dni}{\Sexpr{Sys.getenv("DNI", unset = "\\_\\_\\_\\_\\_\\_\\_\\_\\_")}}
+
+
+\usepackage{pdfpages}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+  \pagenumbering{roman}
+\input{portada/portada}
+\input{prefacios/prefacio}
+%\frontmatter
+\tableofcontents
+%\listoffigures
+%\listoftables
+%
+%\mainmatter
+%\setlength{\parskip}{5pt}
+
+<<setup, include=FALSE, cache=FALSE>>=
+require(knitr)
+require(ggplot2)
+require(xgboost)
+require(Matrix)
+
+# Multiple plot function
+#
+# http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+  if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+# opts_chunk$set(cache=TRUE, autodep=TRUE)
+# opts_chunk$set(fig.width=4, fig.height=3,fig.pos = '!hbt')
+opts_chunk$set(fig.pos = 'H', cache=T, autodep=T)
+@
+
+\cleardoublepage\pagenumbering{arabic}
+
+<<Introduccion, child='capitulos/1_Introduccion.Rnw'>>=
+@
+
+<<Objetivos, child='capitulos/2_Objetivos.Rnw'>>=
+@
+
+<<Metodologia, child='capitulos/3_Metodología.Rnw'>>=
+@
+
+<<Metodologia, child='capitulos/4_Resultados.Rnw'>>=
+@
+
+<<Conclusiones, child='capitulos/5_Conclusiones.Rnw'>>=
+@
+
+%%\chapter{Conclusiones y Trabajos Futuros}
+%
+
+%%\nocite{*}
+%\bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
+%\bibliographystyle{miunsrturl}
+%
+
+%\input{apendices/manual_usuario/manual_usuario}
+% \input{apendices/apendice}
+%\input{glosario/entradas_glosario}
+% \addcontentsline{toc}{chapter}{Glosario}
+% \printglossary
+\chapter*{}
+\thispagestyle{empty}
+
+\bibliography{bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
+\label{bibliografia}
+% \bibliographystyle{plain}
+
+
+\input{apendices/apendice}
+
+\end{document}

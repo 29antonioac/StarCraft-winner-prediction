@@ -2,7 +2,7 @@ package analytics
 
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.{RandomForestClassificationModel, RandomForestClassifier, GBTClassifier, NaiveBayes, LogisticRegression}
+import org.apache.spark.ml.classification.{RandomForestClassifier, GBTClassifier, NaiveBayes, LogisticRegression,MultilayerPerceptronClassifier}
 import org.apache.spark.ml.evaluation.{MulticlassClassificationEvaluator,BinaryClassificationEvaluator}
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.ml.feature.{IndexToString, StringIndexer, VectorIndexer}
@@ -13,6 +13,7 @@ import org.apache.spark.ml.param.ParamMap
 //import org.apache.spark.SparkContext._
 //import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.ml.classification.KNNClassifier
 
 // OFF logging
 import org.apache.log4j.Logger
@@ -74,18 +75,41 @@ object modelling {
                         ))
       .setOutputCol("features")
       
-    println("Loading data...")
+    println("Loading data")
     val file = spark.read.option("header","true")
       .option("inferSchema","false")
       .schema(dataSchema)
       .csv(args(0))
        
     // Split the data into training and test sets (30% held out for testing).
-    println("Splitting data...")
-    val Array(trainData, testData) = file randomSplit Array(0.7, 0.3)
+    val trainPath = "trainData.csv"
+    val testPath = "testData.csv"
     
-    trainData.write.option("header", "true").csv("traData.csv")
-    testData.write.option("header", "true").csv("testData.csv")
+    val Array(trainData, testData) = if (! new java.io.File(trainPath).exists || ! new java.io.File(testPath).exists) {
+      println("Splitting data")
+      val Array(trainData, testData) = file randomSplit Array(0.7, 0.3)
+      
+      println("Writing to files")
+      trainData.write.option("header", "true").csv(trainPath)
+      testData.write.option("header", "true").csv(testPath)
+      Array(trainData, testData)
+    }
+    else {
+      println("Reading from existing files")
+      val trainData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(trainPath)
+      
+      val testData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(testPath)
+      
+      Array(trainData, testData)
+    }
+
+      
     
     val winnerIndexer = new StringIndexer()
       .setInputCol("Winner")
@@ -111,7 +135,7 @@ object modelling {
     val rf = new RandomForestClassifier()
       .setLabelCol(winnerIndexer.getOutputCol)
       .setFeaturesCol(featureIndexer.getOutputCol)
-      .setNumTrees(100)
+      .setNumTrees(150)
       .setMaxMemoryInMB(1024)
     
     val nb = new NaiveBayes()
@@ -123,6 +147,21 @@ object modelling {
       .setFeaturesCol(featureIndexer.getOutputCol)
       .setMaxIter(150)
       
+    val gbt = new GBTClassifier()
+      .setLabelCol(winnerIndexer.getOutputCol)
+      .setFeaturesCol(featureIndexer.getOutputCol)
+      .setMaxIter(150)
+      
+    val mlp = new MultilayerPerceptronClassifier()
+      .setLabelCol(winnerIndexer.getOutputCol)
+      .setFeaturesCol(featureIndexer.getOutputCol)
+      .setMaxIter(150)
+      
+    val knn = new KNNClassifier()
+      .setLabelCol(winnerIndexer.getOutputCol)
+      .setFeaturesCol(featureIndexer.getOutputCol)
+      .setTopTreeSize(trainData.count().toInt / 500)
+      
     val rf_paramGrid = new ParamGridBuilder()
       .addGrid(rf.maxDepth, Array(5, 10))
       .build()
@@ -133,12 +172,26 @@ object modelling {
       
     val lr_paramGrid = new ParamGridBuilder()
       .addGrid(lr.regParam, Array(0.3,0.5))
-      .addGrid(lr.regParam, Array(0.5,0.8))
+      .build()
+      
+    val gbt_paramGrid = new ParamGridBuilder()
+      .addGrid(gbt.maxDepth, Array(5, 10))
+      .build()
+    
+    val mlp_paramGrid = new ParamGridBuilder()
+      .addGrid(mlp.layers, Array(Array(28,4,5,2),Array(28,10,10,2)))
+      .build()
+      
+    val knn_paramGrid = new ParamGridBuilder()
+      .addGrid(knn.k, Array(3,5))
       .build()
       
     val model_map = Map ("rf" -> Tuple2(rf, rf_paramGrid),
                          "nb" -> Tuple2(nb, nb_paramGrid),
-                         "lr" -> Tuple2(lr, lr_paramGrid)
+                         "lr" -> Tuple2(lr, lr_paramGrid),
+                         "gbt" -> Tuple2(gbt, gbt_paramGrid),
+                         "mlp" -> Tuple2(mlp, mlp_paramGrid) //,
+                         //"knn" -> Tuple2(knn, knn_paramGrid) This is not writable ATM!
                         )
     
                         
@@ -172,8 +225,12 @@ object modelling {
         
         val timeEnd = System.nanoTime
         
+        val elapsed = timeEnd - timeStart
+        
+        println("Elapsed: " + elapsed + " seconds")
+        
         fitted_model.save(model_path)    
-        (model._1, timeEnd - timeStart)
+        (model._1, elapsed)
       }
       else println(model_path + " already exists!")
     })
@@ -182,7 +239,7 @@ object modelling {
     
     val csv:String = "Model,Time\n" + results.toSeq.mkString("\n")
     
-    new java.io.PrintWriter("results.csv") { write(csv); close() }
+    new java.io.PrintWriter("timeElapsed.csv") { write(csv); close() }
     
     
     

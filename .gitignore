@@ -16,6 +16,7 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -31,6 +32,17 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+.Rproj.user
+
+# Spark metadata
+Spark-workspace/.metadata
+Spark-workspace/.settings/
+Spark-workspace/StarCraft-Analytics/.settings/
+Spark-workspace/StarCraft-Analytics/model*/
+*.log
+results.csv
+
 
 ####### LaTeX
 

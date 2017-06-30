@@ -1,0 +1,1 @@
+spark-submit --class analytics.modelling --driver-memory 28G target/StarCraft-Analytics-0.0.1-SNAPSHOT.jar ../../data/data_full_ordered.csv

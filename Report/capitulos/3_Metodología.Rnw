@@ -5,8 +5,8 @@ Las principales herramientas utilizadas en este trabajo han sido las siguientes.
 
 \begin{itemize}
   \item \LaTeX \, como procesador de textos científico.
-  \item \emph{Scala} y \emph{Spark} como ecosistema para el tratamiento de datos
-  en entornos \emph{Big Data}.
+  \item \emph{Scala}, \emph{Spark} y \emph{MLlib}como ecosistema para el
+  tratamiento de datos en entornos \emph{Big Data}.
   \item \emph{R} y \emph{ggplot2} para graficar resultados. Junto a \emph{knitr},
   este documento sigue el paradigma de \emph{programación literaria},
   uniendo documento y programa, siendo muy cómodo de escribir y leer.
@@ -193,7 +193,75 @@ comentado anteriormente, sólo hay que iterar por los distintos \emph{ReplayID}
 para conseguir los datos de todas las partidas de cada una de las seis bases
 de datos.
 
+Con todo esto, se puede comenzar con un \info{meter EDA}{análisis}
+exploratorio de datos.
 
+Por otra parte, el conjunto de datos es tan completo en su estructura, que no
+se van a extraer ningún tipo de características derivadas. Algunas útiles
+podrían ser el acumulado de recursos durante la partida los cuales ya están
+reflejados en los datos. Otra característica interesante podría ser la
+proporción de la partida que se ha jugado, pero supondría un problema si
+quisiéramos cumplir el objetivo de implantarlo en un agente en tiempo real,
+ya que no sabría la duración de la partida hasta que no acabara.
 
 \section{Modelado}
 \label{sec:modelado}
+
+A la vista de la gran cantidad de datos que han sido extraídos, hay que
+tomar la decisión de con qué software se van a manejar. Como se comentó
+en~\ref{cap:metodologia}, se ha utilizado la simbiosis de \emph{Scala},
+\emph{Spark} y \emph{MLlib}, que es el estado del arte en entornos de
+\emph{Big Data}. Proveen herramientas para que realizar análisis
+en \emph{Big Data} en entornos distribuidos sea similar a hacerlo en un
+entorno centralizado.
+
+En un primer intento de sacar jugo a los datos tomados, se probó a utilizar
+la clásica combinación de \emph{R} y el archiconocido paquete \emph{caret},
+pero las implementaciones de algoritmos clásicos como \emph{Random Forest}
+no eran capaces de manejar esta cantidad de datos, llenando la memoria
+de la máquina en cuestión de minutos. Este hecho ha sido un gran incentivo
+para tomar la decisión arriba propuesta: utilizar \emph{Spark} para el
+tratamiento de datos.
+
+Antes de comentar el modelado, organización de módulos y demás, se va a
+realizar una breve introducción a \emph{Spark}, cómo funciona y cómo se utiliza.
+Nótese que la versión utilizada de \emph{Spark} ha sido la 2.1.1, versión
+lanzada el 2 de Mayo de 2017. Además, es de destacar que la versión de la API
+de la \emph{MLlib} utilizada es la más nueva, que trabaja con el tipo de dato
+\emph{DataFrame}, al contrario que la antigua, que trabajaba con el tipo de dato
+\emph{RDD}, (\texttt{Resilient Distributed Data}). Aunque coexisten ambas,
+se recomienda utilizar la nueva, ya que es el camino que seguirá tomando
+\emph{Spark} y \emph{MLlib} en el futuro próximo.
+
+Primero se estudiarán varios conceptos esenciales para la comprensión del
+ecosistema de trabajo que estamos utilizando, que están muy bien explicados
+en \fnurl{la web de la API de \emph{Spark}}{https://spark.apache.org/docs/latest/ml-pipeline.html}.
+\emph{Spark} y \emph{MLlib}
+se basan en el concepto de \emph{Pipeline}, \emph{Tubería} en español.
+\emph{MLlib} estandariza la API, pudiendo encadenar todo tipo de métodos para
+aprendizaje automático de manera sencilla, como si de un flujo de trabajo
+se tratara. Existen varios tipos de ``objetos'' que se pueden encadenar
+dentro de un \emph{Pipeline}.
+
+\begin{itemize}
+  \item \emph{DataFrame}: Tipo de dato que almacena un conjunto de datos
+  para aplicar aprendizaje sobre él. Este tipo de dato viene directamente del
+  módlulo \emph{SQL} para \emph{Spark}, lo que significa que podemos realizar
+  cualquier operación de \emph{SQL} sobre éste directamente desde \emph{Spark},
+  facilitando mucho la tarea de realizar operaciones sencillas pero potentes
+  en \emph{SQL}, como agregaciones, agrupaciones y selecciones.
+  Además, a partir de la versión 2.0 de \emph{Spark}, se pueden cargar directamente
+  ficheros comunes de distinto tipo (como \texttt{csv} o \texttt{json}) sin
+  necesidad de bibliotecas externas y sin complicaciones.
+  \item \emph{Transformer}: Algoritmo que transforma un \emph{DataFrame} en
+  otro \emph{DataFrame}. El más utilizado es un propio modelo de aprendizaje,
+  que transforma un \emph{DataFrame} con datos en otro con datos y predicciones.
+  Otro muy usual es transformar alguna variable o un conjunto de ellas, para
+  discretizarlas, normalizarlas, etc.
+  \item \emph{Estimator}: Algoritmo que ajusta un \emph{DataFrame} para producir
+  un \emph{Transformer}. Un algoritmo de aprendizaje es un \emph{Estimator}
+  que proporciona un modelo, un \emph{Transformer}.
+  \item \emph{Pipeline}: Estructura para encadenar \emph{Transformers} y
+  \emph{Estimators} para producir un flujo de trabajo para aprendizaje.
+  \item \emph{Parameter}: Parámetros para \emph{Transformers} y \emph{Estimators}.
+\end{itemize}

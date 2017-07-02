@@ -34,6 +34,8 @@
 
 \usepackage[pdfborder={000}, colorlinks]{hyperref} %referencia
 
+\setlength{\parskip}{1mm}
+
 %%%%% TodoNotes
 \usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage{xargs}                      % Use more than one optional parameter in a new commands
@@ -295,7 +297,7 @@ opts_chunk$set(fig.pos = 'H', cache=T, autodep=T)
 <<Metodologia, child='capitulos/3_Metodología.Rnw'>>=
 @
 
-<<Metodologia, child='capitulos/4_Resultados.Rnw'>>=
+<<Resultados, child='capitulos/4_Resultados.Rnw'>>=
 @
 
 <<Conclusiones, child='capitulos/5_Conclusiones.Rnw'>>=

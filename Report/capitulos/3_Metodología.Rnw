@@ -375,5 +375,8 @@ guardará en disco para su uso en el siguiente módulo.
   precisión, \emph{AUC} y \emph{F1}. Guarda los resultados en disco.
   \item Extrae, de los modelos en los que sea posible, la importancia de las
   variables predictoras. No sólo es importante predecir, sino saber por qué
-  se da dicha predicción.
+  se da dicha predicción. Guarda los resultados en disco.
 \end{itemize}
+
+Con todo lo referente a metodología de trabajo explicada, se pasa a realizar
+una discusión de los resultados obtenidos con este enfoque.

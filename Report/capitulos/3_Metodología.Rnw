@@ -221,7 +221,10 @@ pero las implementaciones de algoritmos clásicos como \emph{Random Forest}
 no eran capaces de manejar esta cantidad de datos, llenando la memoria
 de la máquina en cuestión de minutos. Este hecho ha sido un gran incentivo
 para tomar la decisión arriba propuesta: utilizar \emph{Spark} para el
-tratamiento de datos.
+tratamiento de datos. Aunque es de mencionar que el problema a tratar NO es
+\emph{Big Data}, es bastante grande para tratarlo en una computadora personal.
+Por tanto, el usar herramientas destinadas al tratamiento de grandes cantidades
+de datos evitará tener problemas como los indicados.
 
 Antes de comentar el modelado, organización de módulos y demás, se va a
 realizar una breve introducción a \emph{Spark}, cómo funciona y cómo se utiliza.
@@ -319,16 +322,9 @@ se van a ajustar y sus parámetros, realiza las siguientes funciones:
   pasos necesarios para darle el formato necesario al \emph{DataFrame} para
   tratarlo con \emph{MLlib}.
   \item Con este \emph{Pipeline}, tunea los hiperparámetros del modelo
-  utilizando Validación Cruzada con 10 particiones.
+  utilizando validación cruzada con 10 particiones.
   \item Guarda en disco el modelo resultante para su posterior análisis
 \end{itemize}
-carga los datos del dataset
-que se ha extraído siguiendo los pasos de las
-secciones~\ref{sec:seleccion,sec:preprocesamiento}, los separa en entrenamiento
-y test, forma un \emph{Pipeline}
-cuya salida es un modelo aprendido, forma un grid de parámetros para el modelo
-en cuestión y lo tunea utilizando Validación Cruzada con 10 particiones.
-Por último, guarda el modelo resultante en disco.
 
 El \emph{Pipeline} es generado de forma dinámica según los modelos
 que ya existan en disco, para no reaprender el mismo modelo en varias
@@ -359,7 +355,7 @@ Utilizando este \emph{Pipeline} se forma un objeto del tipo \emph{CrossValidator
 que optimiza un objeto del tipo \emph{Estimator} (y se recuerda que un
 \emph{Pipeline} lo es) con un determinado grid de parámetros del tipo
 \emph{ParamGrid}, utilizando
-Validación Cruzada con 10 particiones según la medida deseada. Esto se consigue
+validación cruzada con 10 particiones según la medida deseada. Esto se consigue
 gracias a un objeto del tipo \emph{MulticlassClassificationEvaluator}, el cual
 se ha configurado para utilizar la precisión de clasificación. Se ha decidido esta
 medida en detrimento del \emph{Area Under Curve}, (\emph{AUC}) porque hay
@@ -370,6 +366,14 @@ Así se consigue un modelo con unos parámetros más cerca de los óptimos para
 cada algoritmo y para este problema. Cada uno de los modelos resultantes se
 guardará en disco para su uso en el siguiente módulo.
 
-Éste, llamado \emph{Testing}, carga los modelos guardados en disco y calcula
-la precisión, el \emph{AUC} y la medida \emph{F1} en el conjunto de test que
-previamente se había separado.
+Éste, llamado \emph{Testing}, realiza los siguientes pasos:
+
+\begin{itemize}
+  \item Carga las particiones de entrenamiento y test previamente almacenadas.
+  \item Carga los modelos guardados en disco.
+  \item Para cada modelo, calcula 3 medidas sobre el conjunto de test:
+  precisión, \emph{AUC} y \emph{F1}. Guarda los resultados en disco.
+  \item Extrae, de los modelos en los que sea posible, la importancia de las
+  variables predictoras. No sólo es importante predecir, sino saber por qué
+  se da dicha predicción.
+\end{itemize}

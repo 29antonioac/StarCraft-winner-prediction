@@ -265,3 +265,111 @@ dentro de un \emph{Pipeline}.
   \emph{Estimators} para producir un flujo de trabajo para aprendizaje.
   \item \emph{Parameter}: Parámetros para \emph{Transformers} y \emph{Estimators}.
 \end{itemize}
+
+Más específicamente, un \emph{Pipeline} es una secuancia de pasos, donde cada
+uno es o bien un \emph{Transformer} o un \emph{Estimator}. Estos pasos tienen
+un orden, determinado en tiempo de compilación, donde la entrada es un
+\emph{DataFrame} que se va transformando con los operadores que constituyan el
+\emph{Pipeline}. En la figura~\ref{fig:pipeline} se puede ver un ejemplo de
+\emph{Pipeline} para un problema de clasificación de texto, donde los elementos
+en azul son \emph{Transformers} y el elemento rojo, el algoritmo de modelado,
+es un \emph{Estimator}. En la fila de abajo, se comtemplan las modificaciones
+que van sufriendo los datos hasta llegar al modelo final.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figure/ml-Pipeline.png}
+  \caption{Ejemplo de \emph{Pipeline} para clasificación de texto.}
+  \label{fig:pipeline}
+\end{figure}
+
+Además, estos \emph{Pipelines} pueden ser serializados y guardados en disco
+para su posterior carga y utilización, lo cual facilita la labor de análisis
+cuando hay que repetir el mismo proceso o cuando el tiempo de cómputo es muy
+alto.
+
+Antes de pasar al modelado en sí, hay que destacar un último detalle.
+\emph{Spark} y la \emph{MLlib} precisan de que el conjunto de datos de modelado
+esté en una forma determinada, con dos componentes:
+
+\begin{itemize}
+  \item \emph{Features}: Vector con componentes numéricas que contiene los
+  atributos predictores del conjunto de datos.
+  \item \emph{Label}: Etiqueta numérica del dato.
+\end{itemize}
+
+En cualquier caso, se pueden modificar los nombres de las columnas, pero no
+su forma. Por tanto, si se carga un dataset en formato \texttt{csv}, por
+ejemplo, habrá que coger todas las variables predictoras y meterlas en un
+vector de numéricos, y asegurarse que la etiqueta también esté en dicho formato.
+
+Una vez se tiene idea de cómo funcionan \emph{Spark} junto a la \emph{MLlib},
+se pasa a describir cómo se ha organizado el modelado. Se han escrito dos
+módulos en \emph{Scala}. Forman un paquete llamado \emph{StarCraft-Analytics}
+
+El primero de ellos, llamado \emph{Modelling}, el cual almacena qué modelos
+se van a ajustar y sus parámetros, realiza las siguientes funciones:
+
+\begin{itemize}
+  \item Carga los datos del dataset.
+  \item Separa el dataset en entrenamiento y test, con proporciones 70\% y 30\%
+  respectivamente, guardando las particiones en disco. Si existen, simplemente
+  las carga, para mantener las particiones entre ejecuciones.
+  \item Forma un \emph{Pipeline} cuya salida es el modelo aprendido, con los
+  pasos necesarios para darle el formato necesario al \emph{DataFrame} para
+  tratarlo con \emph{MLlib}.
+  \item Con este \emph{Pipeline}, tunea los hiperparámetros del modelo
+  utilizando Validación Cruzada con 10 particiones.
+  \item Guarda en disco el modelo resultante para su posterior análisis
+\end{itemize}
+carga los datos del dataset
+que se ha extraído siguiendo los pasos de las
+secciones~\ref{sec:seleccion,sec:preprocesamiento}, los separa en entrenamiento
+y test, forma un \emph{Pipeline}
+cuya salida es un modelo aprendido, forma un grid de parámetros para el modelo
+en cuestión y lo tunea utilizando Validación Cruzada con 10 particiones.
+Por último, guarda el modelo resultante en disco.
+
+El \emph{Pipeline} es generado de forma dinámica según los modelos
+que ya existan en disco, para no reaprender el mismo modelo en varias
+ejecuciones distintas. Para ello se hace uso de la orientación a objetos
+de \emph{Scala}. El \emph{Pipeline} generado tiene esta estructura.
+
+\begin{itemize}
+  \item \texttt{racesIndexer}: \emph{Transformer} del tipo \texttt{StringIndexer}
+  que indexa una variable de tipo \texttt{String}. La etiqueta más frecuente
+  se indexará con el valor \texttt{0.0}, la siguiente con \texttt{1.0}, y así
+  sucesivamente. Se utiliza para indexar la variable que modela las razas
+  implicadas en la partida, que es de tipo \texttt{String}.
+  \item \texttt{winnerIndexer}: Similar a \texttt{racesIndexer}, pero se usa
+  para la variable de salida, que también es de tipo \texttt{String}.
+  \item \texttt{assembler}: \emph{Transformer} de tipo \texttt{VectorAssembler}
+  que toma varias columnas de un \emph{DataFrame} y genera una nueva con
+  todas las de entrada organizadas como un único vector. Este vector será el
+  vector de variables predictoras que hablamos antes.
+  \item \texttt{featureIndexer}: \emph{Transformer} del tipo \texttt{VectorIndexer}
+  que se usa para detectar variables categóricas. Como la única variable
+  categórica es la que modela las razas implicadas y tiene 6 posibles valores,
+  se configura este paso del \emph{Pipeline} para que cualquier variable que
+  tenga más de 6 valores, la tome como continua.
+  \item El algoritmo de modelado.
+\end{itemize}
+
+Utilizando este \emph{Pipeline} se forma un objeto del tipo \emph{CrossValidator},
+que optimiza un objeto del tipo \emph{Estimator} (y se recuerda que un
+\emph{Pipeline} lo es) con un determinado grid de parámetros del tipo
+\emph{ParamGrid}, utilizando
+Validación Cruzada con 10 particiones según la medida deseada. Esto se consigue
+gracias a un objeto del tipo \emph{MulticlassClassificationEvaluator}, el cual
+se ha configurado para utilizar la precisión de clasificación. Se ha decidido esta
+medida en detrimento del \emph{Area Under Curve}, (\emph{AUC}) porque hay
+algunos modelos en \emph{MLlib}
+que no tienen implementada la salida necesaria para calcularlo.
+
+Así se consigue un modelo con unos parámetros más cerca de los óptimos para
+cada algoritmo y para este problema. Cada uno de los modelos resultantes se
+guardará en disco para su uso en el siguiente módulo.
+
+Éste, llamado \emph{Testing}, carga los modelos guardados en disco y calcula
+la precisión, el \emph{AUC} y la medida \emph{F1} en el conjunto de test que
+previamente se había separado.

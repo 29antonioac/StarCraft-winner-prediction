@@ -130,7 +130,7 @@ Como se ha comentado anteriormente, los datos vienen organizados en seis bases
 de datos relacionales, de tipo SQL, por lo que se hace necesario el uso de un
 \emph{Sistema Gestor de Bases de Datos}. Como se comentó al principio de esta
 sección, se ha elegido \emph{MariaDB} por ser la implementación libre de la
-archiconocida \emph{MySQL}. \unsure{Si hay tiempo, ¿por qué no?}{No} se detallará
+archiconocida \emph{MySQL}. No se detallará
 el montaje y puesta en marcha de esto, aunque es de gran importancia
 hacer saber que para cualquier científico de datos, manejarse con el
 levantamiento de este tipo de servicios también es muy importante.
@@ -167,7 +167,7 @@ tomando el último valor de las unidades en el tiempo: se tomará el valor de
 las unidades en el instante de tiempo más grande posible, pero más pequeño
 que el actual.
 
-Una vez se tienen las referencias en tl tiempo, falta un detalle importante:
+Una vez se tienen las referencias en el tiempo, falta un detalle importante:
 como se ha comentado en la sección~\ref{sec:seleccion}, los cambios registrados
 en los valores de las unidades son a nivel de una determinada región del mapa.
 Por tanto, para tomar el valor total de las unidades de un jugador, hay que
@@ -193,8 +193,135 @@ comentado anteriormente, sólo hay que iterar por los distintos \emph{ReplayID}
 para conseguir los datos de todas las partidas de cada una de las seis bases
 de datos.
 
-Con todo esto, se puede comenzar con un \info{meter EDA}{análisis}
+Con todo esto, se puede comenzar con un análisis
 exploratorio de datos.
+
+<<loadReplaysFacet>>=
+if(! file.exists("../../data/replays.melt.plots.rds")) {
+  if(! exists("data.full")) data.full <- read.csv("../../data/data_full.csv", colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
+
+  replays.plot <- data.full[data.full$ReplayID %in% sample(unique(data.full$ReplayID[grepl("PvP",data.full$ReplayID)]),3),]
+
+  features.melt <- list(c("Minerals","Gas","Supply"),
+                        c("TotalMinerals","TotalGas","TotalSupply"),
+                        c("GroundUnitValue","BuildingValue","AirUnitValue"),
+                        c("ObservedEnemyGroundUnitValue","ObservedEnemyBuildingValue","ObservedEnemyAirUnitValue"),
+                        c("ObservedResourceValue"))
+
+  replays.melt.plots <- lapply(features.melt, function(features){
+    r1 <- melt(replays.plot, id.vars = c("Frame","ReplayID"), measure.vars = features, variable_name = "Value")
+    r2 <- melt(replays.plot, id.vars = c("Frame","ReplayID"), measure.vars = paste0("Enemy",features), variable_name = "Value")
+    replays.melt <- merge(r1,r2, by = c("Frame","ReplayID"))
+    replays.melt <- replays.melt[replays.melt$variable.y == paste0("Enemy",replays.melt$variable.x),
+                                 !colnames(replays.melt) %in% "variable.y"]
+    colnames(replays.melt) <- c("Frame","ReplayID","Variable","Value","Value2")
+
+    gg <- ggplot(replays.melt) + facet_grid(ReplayID ~ Variable) + geom_line(aes(x = Frame, y = Value),  color = "red") + geom_line(aes(x = Frame, y = Value2), color = "blue")
+    gg
+  })
+
+  saveRDS(replays.melt.plots, "../../data/replays.melt.plots.rds")
+}
+replays.melt.plots <- readRDS("../../data/replays.melt.plots.rds")
+@
+
+<<loadMetadata>>=
+if (! file.exists("../../data/metadata.csv")) {
+  metadata <- data.full[, colnames(data.full) %in% c("ReplayID", "Duration", "Races")]
+  metadata <- unique(metadata)
+  write.csv(metadata, "../../data/metadata.csv", row.names = FALSE)
+}
+metadata <- read.csv("../../data/metadata.csv")
+@
+
+En primer lugar se incluye en la figura~\ref{fig:replaysHistogram} un
+gráfico de barras con la duración de las partidas
+del dataset. Incluye la distribución de las 6 posibles combinaciones de
+razas que se pueden dar en la partida.
+
+<<replaysHistogram, fig.cap = "Duración de las partidas del dataset">>=
+metadata <- read.csv("../../data/metadata.csv")
+gg <- ggplot(data=metadata) +
+  geom_bar(aes(x=ReplayID,y=Duration,fill=Races), stat="identity", width = 0.75) +
+  geom_hline(yintercept = mean(metadata$Duration), color = "red",linetype="dashed") +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+gg
+@
+
+Se puede observar que la duración de las partidas parece depender de la
+combinación de razas enfrentadas en ésta. La duración no es un atributo predictor
+que se vaya a usar, pero es posible que las razas implicadas tengan peso
+en los modelos finales.
+
+\newpage
+
+Ahora se tomarán tres partidas de manera aleatoria, y se echará un vistazo
+preliminar a la forma en la que se desarrollan. Hay que tener en cuenta que son
+tres partidas tomadas aleatoriamente,
+lo cual puede hacernos una idea errónea. En este tipo de casos está bien
+comprobar nuestras hipótesis realizando varios muestreos, teniendo en cuenta
+que nunca se va a poder realizar un barrido completo al conjunto de datos,
+por lo que no se pueden sacar conclusiones sólo con esto.
+
+En las gráficas de la figura~\ref{fig:replays1} se pueden ver los distintos
+recursos de una partida.
+
+A primera vista, no parece que estas características vayan a ser demasiado
+importantes para la predicción del resultado. Ni hay cambios bruscos,
+ni diferencias significativas entre los valores de los recursos entre los
+jugadores.
+
+
+<<replays1, fig.cap = "Parámetros de tres partidas cualesquiera (1/5)">>=
+replays.melt.plots[[1]]
+@
+
+\newpage
+
+En las gráficas de la figura~\ref{fig:replays2} se aprecian los recursos
+acumulados de cada jugador. Al igual que antes, no parece que vayan a tener
+gran peso.
+
+<<replays2, fig.cap = "Parámetros de tres partidas cualesquiera (2/5)">>=
+replays.melt.plots[[2]]
+@
+
+\newpage
+
+En la figura~\ref{fig:replays3} se empiezan a ver variables que parecen
+importantes. Se muestran los valores de unidades de tierra, aire y
+edificaciones. El jugador que pierde tiene una clara tendencia a perder unidades
+y edificios de manera brusca, por lo que podría ser un buen indicativo del
+resultado.
+
+<<replays3, fig.cap = "Parámetros de tres partidas cualesquiera (3/5)">>=
+replays.melt.plots[[3]]
+@
+
+\newpage
+
+En esta figura~\ref{fig:replays4} se pueden observar los valores observados
+por un jugador de otro de los valores de unidades y edificios. Son valores
+muy volátiles por la mecánica del juego: en cuanto descubres una
+región del mapa, descubres las unidades de los contrarios. A simple vista
+no ofrecen ayuda, pero es muy probable que a un modelo de aprendizaje le vengan
+muy bien estos atributos.
+
+<<replays4, fig.cap = "Parámetros de tres partidas cualesquiera (4/5)">>=
+replays.melt.plots[[4]]
+@
+
+\newpage
+
+Por último, en~\ref{fig:replays5} se ven los recursos restantes del mapa
+estimados. Parece que hay un jugador que sabe que hay cada vez menos recursos
+en el mapa: este será quien más haya explorado. Es posible que por las
+implicaciones que tiene, sea un atributo a considerar.
+
+<<replays5, fig.cap = "Parámetros de tres partidas cualesquiera (5/5)">>=
+replays.melt.plots[[5]]
+@
 
 Por otra parte, el conjunto de datos es tan completo en su estructura, que no
 se van a extraer ningún tipo de características derivadas. Algunas útiles

@@ -1,2 +1,33 @@
 \chapter{Conclusiones y trabajo futuro}
 \label{cap:conclusiones}
+
+Sobre este estudio se pueden sacar varias conclusiones. La primera de ellas
+es que los datos han sido bien escogidos y formados. En particular los valores
+de unidades y construcciones, tanto reales como observados, colaboran para
+decidir el ganador de la partida con bastante peso. Las predicciones sobre
+estos datos son bastante precisas, por lo que podría llevarse un modelo
+de alguno de los tipos propuestos al campo de batalla para hacer predicciones
+en tiempo real con confianza.
+
+También se debería destacar, aunque se ha comentado en~\ref{cap:introduccion},
+que el conjunto de datos estudiado es totalmente heterogéneo: se han utilizado
+todas las combinaciones de razas
+posible para entrenar el clasificador, además de un conjunto muy grande de
+éstas. Así se diferencia de los pocos trabajos previos en el ámbito de la
+predicción que no se basan en modelos gráficos.
+
+Existen distintas posibles vías de desarrollo futuro utilizando lo tratado aquí.
+
+\begin{itemize}
+  \item Crear o mejorar un bot competitivo utilizando las características
+  propuestas junto a un modelo de aprendizaje similar a alguno de los estudiados,
+  mejorando la gestión de la incertidumbre que presentan agentes reales,
+  pudiendo adaptar mejor su estrategia o hacerlo en un momento anterior.
+  \item La predicción del ganador puede resultar muy útil en combinación
+  con cualquier metaheurística. Al ser algoritmos que evalúan soluciones y
+  recorren el espacio de búsqueda de manera inteligente, se puede acelerar el
+  paso de evaluación si, con un clasificador fiable, se dan partidas por
+  terminadas mucho antes de su finalización real. Como se comentó
+  en~\ref{cap:introduccion}, trabajos que podrían aprovechar este estudio
+  serían~\citep{7317940} y~\citep{Fernandez-Ares2016}.
+\end{itemize}

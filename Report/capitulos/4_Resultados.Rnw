@@ -1,21 +1,27 @@
 \chapter{Resultados y discusión}
 \label{cap:resultados}
 
-En la figura~\ref{fig:MeasuresGraphics} y su tabla asociada se pueden observar
-los modelos entrenados junto a sus métricas de acierto y \emph{F1}. \\
+En la figura~\ref{fig:MeasuresGraphics} y en la tabla~\ref{tab:measures}
+se pueden observar los modelos entrenados junto a sus métricas de acierto
+y \emph{F1} sobre el conjunto de test.
 
-<<MeasuresData, fig.cap = "Tabla con los algoritmos modelados y las medidas conseguidas">>=
+<<MeasuresData,results='asis'>>=
 measures <- read.csv("../../Spark-workspace/StarCraft-Analytics/measures.csv")
 rownames(measures) <- c("Accuracy","AUC","F1")
 measures <- as.data.frame(t(measures))
+measures <- rbind(measures, c(0.9754953098794287,0.99235048718616,0.9754828794253172))
+rownames(measures)[6] <- "KNN"
 measures$Algorithm <- rownames(measures)
 measures$Params <- c("numTrees = 150, maxDepth = 10","maxIter = 150, regParam = 0.3",
                      "Smoothing = 1", "numTrees = 150, maxDepth = 10",
-                     "Hidden layers = (10,10)")
+                     "Hidden layers = (10,10)", "K = 3")
 measures$AUC[measures$AUC == -1.0] <- 0.0
-knitr::kable(measures[,c(5,1,3)])
+xtable::xtable(measures[,c(5,1,3)],
+  caption = "Tabla con los algoritmos modelados y las medidas conseguidas",
+  table.placement="H",
+  label = "tab:measures" )
 @
-\hfill \break
+
 
 
 En general, todos excepto \emph{Naive Bayes} se comportan decentemente, pero hay
@@ -42,7 +48,7 @@ ggplot(measures.melt, aes(Algorithm, value, fill = variable)) +
 
 En las siguientes gráficas se tomará como referencia la importancia de la
 variable tiempo, \emph{Frame}, ya que es fácil para cualquier persona pensar
-que el tiempo de la partida es determinante para determinar su resultado.
+que el tiempo de la partida es esencial para determinar su resultado.
 Veremos que no es tan importante, existen variables más importantes que ésta
 y no por pequeñas diferencias.
 
@@ -85,9 +91,9 @@ ggplot(features.rf, aes(reorder(Feature, Importance), Importance, fill = color))
   labs(x = "Feature", fill = "Importance \n> \nImportance of Frame")
 @
 
-Para \emph{Random Forest} son mucho más importantes que las demás las variables
-que indican la capacidad de carga de la población de cada jugador. Tiene
-sentido: por un lado, más capacidad de carga es consecuencia de una mayor
+Para \emph{Random Forest} son mucho más importantes las variables
+que indican la capacidad de carga de la población de cada jugador que el resto.
+Tiene sentido: por un lado, más capacidad de carga es consecuencia de una mayor
 cantidad de edificios, ya que todos ellos aumentan este valor. A su vez, mayor
 número de edificios implica un abanico mayor de unidades posibles a crear,
 aumentando así la probabilidad de crear unidades muy fuertes. Además, mayor

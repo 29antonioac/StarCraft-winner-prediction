@@ -6,21 +6,26 @@ predicción del resultado de partidas de este videojuego, utilizando aprendizaje
 supervisado sobre un conjunto muy grande y heterogéneo de partidas de
 competición. El caso más parecido es el de
 \citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el conjunto de datos es
-bastante más pequeño y controlado que el usado en este trabajo.
+bastante más pequeño y controlado que el usado en este trabajo, como se
+comentó en~\ref{cap:introduccion}.
 
 Mejorar la predicción no sólo mejoraría el rendimiento de cualquiera de las
 ideas presentadas anteriormente, sino que permitiría abordar otras nuevas
 que no son posibles sin una predicción más precisa. Por ejemplo, el uso
 de metaheurísticas para optimizar planes de un bot podría ser acelerado
 si se sabe de antemano con una precisión alta quién va a ganar, ya que este
-enfoque se basa en ensayo y error.
+enfoque se basa en evaluar soluciones de una gran parte del espacio de búsqueda.
 
-Además, no es sólo importante predecir. También un aspecto muy importante
+Además, no es sólo es importante predecir. También un aspecto muy relevante
 es conseguir determinar qué características de la partida hacen que la victoria
 se decida para un jugador en concreto. Analizar los factores más importantes
 de una partida puede apoyar mucho a los demás enfoques que se les ha dado
 al problema de la creación de agentes autónomos que consigan la victoria en
-los entornos más complejos posibles.
+los entornos más complejos posibles. Además, es el objetivo que más se acerca
+al usuario normal del videojuego, ya que es abordable para un humano
+enfocar su estrategia en función
+de conseguir más información de estas variables y, por consecuencia, estar en
+mejor posición para ganar la partida.
 
 Para ello se utilizará
 una base de datos muy completa, pero no tan estudiada por parte de los

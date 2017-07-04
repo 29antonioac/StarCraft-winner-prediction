@@ -45,7 +45,7 @@ son derivados que han calculado los investigadores, como la distancia a la base
 en un determinado momento.
 
 En siguiente lugar, hay que ver
-qué variables se cogen y cómo se organizan. El objetivo de este
+qué variables se usan y cómo se organizan. El objetivo de este
 paso es conseguir una tabla de la forma filas por columnas, de manera que pueda
 ser interpretable por cualquier algoritmo clásico de aprendizaje.
 
@@ -63,9 +63,9 @@ las unidades de cada jugador no va a ser tarea fácil.
   \label{fig:databaseSelection}
 \end{figure}
 
-En la figura~\ref{fig:databaseSelection} ve pueden ver las variables
+En la figura~\ref{fig:databaseSelection} se pueden ver las variables
 seleccionadas, que se explican en las siguientes líneas. Posteriormente se
-procederá a explicar cómo se han extraído dichas características.
+explicará cómo se han extraído dichas características.
 
 Las características seleccionadas son, principalmente, los recursos de cada
 jugador, sus unidades (que se cuantifican no según el número sino según la
@@ -121,7 +121,13 @@ Los detalles de las características seleccionadas según cada tabla son:
 \end{itemize}
 
 Una vez decididas las variables que vamos a tomar, se pasará a manejar las
-bases de datos para conseguirlas de la manera más limpia posible.
+bases de datos para conseguirlas de la manera más limpia posible. Las variables
+escogidas quedan resumidas en tabla~\ref{tab:features}.
+
+<<features>>=
+if(! exists("data.full")) data.full <- read.csv("../../data/data_full.csv", colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
+knitr::kable(colnames(data.full), format = "latex", caption = "Tabla con características seleccionadas y con su orden")
+@
 
 \section{Preprocesamiento y transformación de los datos}
 \label{sec:preprocesamiento}
@@ -176,9 +182,9 @@ sumar los valores en todas las regiones del mapa.
 Además de todo esto, existe una última cuestión que se ha tenido que resolver.
 Al tomar datos de un jugador en un instante de tiempo para el que dicho jugador
 no tiene información, dichos datos desconocidos se rellenan con \texttt{NULL}.
-Sería sencillo dejarlos así y en una siguiente fase, imputar dichos datos
+Sería sencillo dejarlos así y, en una siguiente fase, imputar dichos datos
 perdidos con cualquier algoritmo clásico. Pero existe una solución mejor y
-mucho más lógica para este problema: si para un jugador, un dato no existe
+mucho más lógica para este problema: si para un jugador un dato no existe
 porque no ha habido un cambio en ese instante de tiempo, significa que tendrá
 los mismos recursos/unidades/etc que en su anterior cambio. Por tanto, sólo
 hay que tomar el valor no nulo anterior más próximo para cada una de las
@@ -258,8 +264,8 @@ en los modelos finales.
 
 Ahora se tomarán tres partidas de manera aleatoria, y se echará un vistazo
 preliminar a la forma en la que se desarrollan. Hay que tener en cuenta que son
-tres partidas tomadas aleatoriamente,
-lo cual puede hacernos una idea errónea. En este tipo de casos está bien
+tres partidas tomadas al azar,
+lo cual puede darnos una idea equivocada. En este tipo de casos está bien
 comprobar nuestras hipótesis realizando varios muestreos, teniendo en cuenta
 que nunca se va a poder realizar un barrido completo al conjunto de datos,
 por lo que no se pueden sacar conclusiones sólo con esto.
@@ -323,13 +329,13 @@ implicaciones que tiene, sea un atributo a considerar.
 replays.melt.plots[[5]]
 @
 
-Por otra parte, el conjunto de datos es tan completo en su estructura, que no
+Por otra parte, el conjunto de datos es tan completo en su estructura que no
 se van a extraer ningún tipo de características derivadas. Algunas útiles
 podrían ser el acumulado de recursos durante la partida los cuales ya están
 reflejados en los datos. Otra característica interesante podría ser la
 proporción de la partida que se ha jugado, pero supondría un problema si
 quisiéramos cumplir el objetivo de implantarlo en un agente en tiempo real,
-ya que no sabría la duración de la partida hasta que no acabara.
+ya que no se sabría la duración de la partida hasta que no acabara.
 
 \section{Modelado}
 \label{sec:modelado}
@@ -348,15 +354,15 @@ pero las implementaciones de algoritmos clásicos como \emph{Random Forest}
 no eran capaces de manejar esta cantidad de datos, llenando la memoria
 de la máquina en cuestión de minutos. Este hecho ha sido un gran incentivo
 para tomar la decisión arriba propuesta: utilizar \emph{Spark} para el
-tratamiento de datos. Aunque es de mencionar que el problema a tratar NO es
-\emph{Big Data}, es bastante grande para tratarlo en una computadora personal.
+tratamiento de datos. Aunque cabe mencionar que el problema a estudiar \textbf{NO}
+es \emph{Big Data}, es bastante grande para tratarlo en una computadora personal.
 Por tanto, el usar herramientas destinadas al tratamiento de grandes cantidades
 de datos evitará tener problemas como los indicados.
 
 Antes de comentar el modelado, organización de módulos y demás, se va a
 realizar una breve introducción a \emph{Spark}, cómo funciona y cómo se utiliza.
 Nótese que la versión utilizada de \emph{Spark} ha sido la 2.1.1, versión
-lanzada el 2 de Mayo de 2017. Además, es de destacar que la versión de la API
+lanzada el 2 de Mayo de 2017. Además, habría que destacar que la versión de la API
 de la \emph{MLlib} utilizada es la más nueva, que trabaja con el tipo de dato
 \emph{DataFrame}, al contrario que la antigua, que trabajaba con el tipo de dato
 \emph{RDD}, (\texttt{Resilient Distributed Data}). Aunque coexisten ambas,
@@ -376,7 +382,7 @@ dentro de un \emph{Pipeline}.
 \begin{itemize}
   \item \emph{DataFrame}: Tipo de dato que almacena un conjunto de datos
   para aplicar aprendizaje sobre él. Este tipo de dato viene directamente del
-  módlulo \emph{SQL} para \emph{Spark}, lo que significa que podemos realizar
+  módulo \emph{SQL} para \emph{Spark}, lo que significa que podemos realizar
   cualquier operación de \emph{SQL} sobre éste directamente desde \emph{Spark},
   facilitando mucho la tarea de realizar operaciones sencillas pero potentes
   en \emph{SQL}, como agregaciones, agrupaciones y selecciones.
@@ -384,10 +390,10 @@ dentro de un \emph{Pipeline}.
   ficheros comunes de distinto tipo (como \texttt{csv} o \texttt{json}) sin
   necesidad de bibliotecas externas y sin complicaciones.
   \item \emph{Transformer}: Algoritmo que transforma un \emph{DataFrame} en
-  otro \emph{DataFrame}. El más utilizado es un propio modelo de aprendizaje,
+  otro \emph{DataFrame}. El más utilizado es un modelo de aprendizaje,
   que transforma un \emph{DataFrame} con datos en otro con datos y predicciones.
-  Otro muy usual es transformar alguna variable o un conjunto de ellas, para
-  discretizarlas, normalizarlas, etc.
+  Otro \emph{Transformer} muy usual es transformar alguna variable o un
+  conjunto de ellas, para discretizarlas, normalizarlas, etc.
   \item \emph{Estimator}: Algoritmo que ajusta un \emph{DataFrame} para producir
   un \emph{Transformer}. Un algoritmo de aprendizaje es un \emph{Estimator}
   que proporciona un modelo, un \emph{Transformer}.
@@ -396,14 +402,14 @@ dentro de un \emph{Pipeline}.
   \item \emph{Parameter}: Parámetros para \emph{Transformers} y \emph{Estimators}.
 \end{itemize}
 
-Más específicamente, un \emph{Pipeline} es una secuancia de pasos, donde cada
+Más específicamente, un \emph{Pipeline} es una secuencia de pasos, donde cada
 uno es o bien un \emph{Transformer} o un \emph{Estimator}. Estos pasos tienen
 un orden, determinado en tiempo de compilación, donde la entrada es un
 \emph{DataFrame} que se va transformando con los operadores que constituyan el
 \emph{Pipeline}. En la figura~\ref{fig:pipeline} se puede ver un ejemplo de
 \emph{Pipeline} para un problema de clasificación de texto, donde los elementos
 en azul son \emph{Transformers} y el elemento rojo, el algoritmo de modelado,
-es un \emph{Estimator}. En la fila de abajo, se comtemplan las modificaciones
+es un \emph{Estimator}. En la fila de abajo, se contemplan las modificaciones
 que van sufriendo los datos hasta llegar al modelo final.
 
 \begin{figure}
@@ -420,7 +426,7 @@ alto.
 
 Antes de pasar al modelado en sí, hay que destacar un último detalle.
 \emph{Spark} y la \emph{MLlib} precisan de que el conjunto de datos de modelado
-esté en una forma determinada, con dos componentes:
+esté de una forma determinada, con dos componentes:
 
 \begin{itemize}
   \item \emph{Features}: Vector con componentes numéricas que contiene los
@@ -430,8 +436,8 @@ esté en una forma determinada, con dos componentes:
 
 En cualquier caso, se pueden modificar los nombres de las columnas, pero no
 su forma. Por tanto, si se carga un dataset en formato \texttt{csv}, por
-ejemplo, habrá que coger todas las variables predictoras y meterlas en un
-vector de numéricos, y asegurarse que la etiqueta también esté en dicho formato.
+ejemplo, habrá que tomar todas las variables predictoras y meterlas en un
+vector de numéricos, y asegurarse de que la etiqueta también esté en dicho formato.
 
 Una vez se tiene idea de cómo funcionan \emph{Spark} junto a la \emph{MLlib},
 se pasa a describir cómo se ha organizado el modelado. Se han escrito dos
@@ -479,7 +485,7 @@ de \emph{Scala}. El \emph{Pipeline} generado tiene esta estructura.
 \end{itemize}
 
 Utilizando este \emph{Pipeline} se forma un objeto del tipo \emph{CrossValidator},
-que optimiza un objeto del tipo \emph{Estimator} (y se recuerda que un
+que optimiza un objeto del tipo \emph{Estimator} (cabe recordar que un
 \emph{Pipeline} lo es) con un determinado grid de parámetros del tipo
 \emph{ParamGrid}, utilizando
 validación cruzada con 10 particiones según la medida deseada. Esto se consigue

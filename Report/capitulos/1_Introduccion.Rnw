@@ -8,7 +8,7 @@ los mejores algoritmos y teorías de los investigadores, como espacios de
 búsqueda enormes o información oculta.
 
 Existe un conjunto de videojuegos que cumplen esta característica, por lo que
-su estudio es cuanto menos, complicado: los juegos de estrategia en tiempo real.
+su estudio es cuanto menos complicado: los juegos de estrategia en tiempo real.
 En general, en este tipo de juegos se comienza la partida con un solo
 edificio y varias unidades, siendo el objetivo formar el ejército más potente
 posible para derrotar al enemigo. Recorrer el mapa en busca de recursos,
@@ -16,7 +16,7 @@ obtener edificios que den acceso a unidades más poderosas, mejorar el armamento
 explorar el mapa para saber dónde están los enemigos... son sólo algunas de
 las posibilidades de este tipo de videojuegos.
 
-Uno de los más famosos juegos de este género es \emph{StarCraft}, un
+Uno de los juegos más famosos de este género es \emph{StarCraft}, un
 videojuego lanzado en 1998 y que ha sido instalado en millones de ordenadores.
 En él existen tres razas, cada una con sus peculiaridades, con las que se
 buscará eliminar al enemigo haciendo uso de sus peculiares características.
@@ -37,16 +37,26 @@ de crear un plan que salga victorioso.
 
 En este ámbito existen muchas posibilidades de intentar resolver el problema.
 Una de las más utilizadas es la creación de modelos gráficos probabilísticos,
-en particular redes bayesianas. Algunos ejemplos están en
-\citep{DBLP:conf/cig/SynnaeveB11a} y \citep{DBLP:conf/aiide/StanescuHEGB13},
+en particular redes bayesianas, para predecir el ganador de una partida.
+Algunos ejemplos están en~\citep{DBLP:conf/cig/SynnaeveB11a}
+y~\citep{DBLP:conf/aiide/StanescuHEGB13},
 en los que se utilizan eventos importantes en la partida como los comentados
-anteriormente: algún edificio concreto, la unidad más fuerte de la raza o alguna
-sucesión de eventos que en conjunto sean importantes.
-
-Para la creación de planes también existen algunos trabajos, basándose en
-predicciones del resultado de las partidas, como en
-\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}.
+anteriormente: algún edificio concreto, la presencia de unidad más fuerte de
+la raza o alguna sucesión de eventos que en conjunto sean importantes.
 
 Existe algún trabajo de predicción utilizando aprendizaje supervisado, como
 \citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el entorno es bastante
-homogéneo y controlado.
+homogéneo y controlado, por lo que es posible que no refleje
+completamente la diversidad que presenta \emph{StarCraft}.
+
+También existen algunos trabajos que buscan generación de planes o estrategias,
+basándose en predicciones del resultado de las partidas, como en
+\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}.
+
+Otro enfoque que le han dado algunos investigadores a este problema es el de
+desarrollar agentes utilizando \emph{Programación Genética},
+creando planes automáticamente que consigan una estrategia ganadora. Este tipo
+de algoritmos son muy costosos, ya que evalúan muchas de las soluciones del
+espacio de búsqueda, que en estos casos suelen ser de dimensión infinita. Aún
+así, consiguen buenos resultados, como se puede comprobar en~\citep{7317940}
+y~\citep{Fernandez-Ares2016}.

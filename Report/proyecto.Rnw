@@ -34,7 +34,7 @@
 
 \usepackage[pdfborder={000}, colorlinks]{hyperref} %referencia
 
-\setlength{\parskip}{1mm}
+\setlength{\parskip}{1.2mm}
 
 %%%%% TodoNotes
 \usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
@@ -228,10 +228,11 @@ citecolor = Violet
 %\setlength{\parskip}{5pt}
 
 <<setup, include=FALSE, cache=FALSE>>=
-require(knitr)
-require(ggplot2)
-require(xgboost)
-require(Matrix)
+library(knitr)
+library(ggplot2)
+library(reshape2)
+
+knitr::opts_chunk$set(echo = F)
 
 # Multiple plot function
 #

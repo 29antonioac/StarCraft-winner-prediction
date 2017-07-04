@@ -27,7 +27,5 @@ Existen distintas posibles vías de desarrollo futuro utilizando lo tratado aqu�
   con cualquier metaheurística. Al ser algoritmos que evalúan soluciones y
   recorren el espacio de búsqueda de manera inteligente, se puede acelerar el
   paso de evaluación si, con un clasificador fiable, se dan partidas por
-  terminadas mucho antes de su finalización real. Como se comentó
-  en~\ref{cap:introduccion}, trabajos que podrían aprovechar este estudio
-  serían~\citep{7317940} y~\citep{Fernandez-Ares2016}.
+  terminadas mucho antes de su finalización real.
 \end{itemize}

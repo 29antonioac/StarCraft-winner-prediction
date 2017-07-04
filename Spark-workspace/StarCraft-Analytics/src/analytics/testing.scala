@@ -6,12 +6,19 @@ import org.apache.spark.ml.tuning.CrossValidatorModel
 import org.apache.spark.ml.PipelineModel
 import org.apache.spark.ml.classification.{MultilayerPerceptronClassificationModel,GBTClassificationModel,RandomForestClassificationModel,LogisticRegressionModel, NaiveBayesModel}
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator,MulticlassClassificationEvaluator}
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions
+
+
 
 // OFF logging
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 
 object testing {
+  def DFtoSingleCSV(df:DataFrame, path:String) {
+    
+  }
   def main(args: Array[String]) {
     
     val spark = SparkSession
@@ -19,9 +26,23 @@ object testing {
       .appName("StarCraft winner prediction - Modelling")
       .getOrCreate()
       
+    val sqlContext = new org.apache.spark.sql.SQLContext(spark.sparkContext)
+
+    import sqlContext.implicits._
+      
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
       
+    
+    val attribs = Array("Frame","Minerals","Gas","Supply","TotalMinerals","TotalGas","TotalSupply",
+                          "GroundUnitValue","BuildingValue","AirUnitValue",
+                          "ObservedEnemyGroundUnitValue","ObservedEnemyBuildingValue","ObservedEnemyAirUnitValue",
+                          "EnemyMinerals","EnemyGas","EnemySupply","EnemyTotalMinerals","EnemyTotalGas","EnemyTotalSupply",
+                          "EnemyGroundUnitValue","EnemyBuildingValue","EnemyAirUnitValue",
+                          "EnemyObservedEnemyGroundUnitValue","EnemyObservedEnemyBuildingValue","EnemyObservedEnemyAirUnitValue",
+                          "ObservedResourceValue","EnemyObservedResourceValue"
+                          ,"indexedRaces"
+                        )
     
     val dataSchema = new StructType()   
       .add("Duration","int")
@@ -133,8 +154,25 @@ object testing {
        
       
     new java.io.PrintWriter("measures.csv") { write(csv); close() }
-            
-      
+    
+    // Extract GBT and RF models
+    val gbtModel = gbt.stages(4).asInstanceOf[GBTClassificationModel]
+    val rfModel = rf.stages(4).asInstanceOf[RandomForestClassificationModel]
+    val nbModel = nb.stages(4).asInstanceOf[NaiveBayesModel]
+
+    
+    val featureGBT = spark.sparkContext.parallelize(attribs zip gbtModel.featureImportances.toArray).toDF("Feature","Importance")
+    val featureRF = spark.sparkContext.parallelize(attribs zip rfModel.featureImportances.toArray).toDF("Feature","Importance")
+    
+    val nb_aux = nbModel.theta.transpose.toArray.splitAt(28)
+    val featureNB = spark.sparkContext.parallelize(nb_aux._1 zip nb_aux._2).toDF("PA","PB") 
+    
+    
+    featureGBT.repartition(1).write.option("header","true").csv("features_gbt")
+    featureRF.repartition(1).write.option("header","true").csv("features_rf")
+    featureNB.repartition(1).write.option("header","true").csv("features_nb")
+    
+       
       
   }
 }

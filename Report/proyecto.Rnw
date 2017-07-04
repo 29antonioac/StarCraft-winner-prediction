@@ -210,7 +210,7 @@ citecolor = Violet
 \makeatother
 
 \newcommand{\sectionbreak}{\clearpage}
-\newcommand{\dni}{\Sexpr{Sys.getenv("DNI", unset = "\\_\\_\\_\\_\\_\\_\\_\\_\\_")}}
+\newcommand{\dni}{\Sexpr{Sys.getenv("DNI",  unset = "\\_\\_\\_\\_\\_\\_\\_\\_\\_")}}
 
 
 \usepackage{pdfpages}

@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[british, spanish, es-tabla]{babel}
 \usepackage{float}
+\usepackage{booktabs}
 
 % \usepackage[style=list, number=none]{glossary} %
 \usepackage{titlesec}

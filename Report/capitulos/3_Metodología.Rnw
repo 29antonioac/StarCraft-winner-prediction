@@ -511,5 +511,37 @@ guardará en disco para su uso en el siguiente módulo.
   se da dicha predicción. Guarda los resultados en disco.
 \end{itemize}
 
-Con todo lo referente a metodología de trabajo explicada, se pasa a realizar
-una discusión de los resultados obtenidos con este enfoque.
+Sólo queda decidir qué modelos se van a aprender de los datos. Por su
+disponibilidad en \emph{Spark} y \emph{MLlib}, se han decidido tomar los
+modelos y parámetros reflejados en la tabla~\ref{tab:modelos}. Se debe destacar
+el caso de \emph{KNN}, que no está oficialmente en la \emph{MLlib}, por lo que
+hay que cargarlo al ejecutar la aplicación. Esto se realiza automáticamente
+con la interfaz de línea de comandos de \emph{Spark} sin problema, haciendo
+una petición a la base de datos de paquetes de \emph{Spark},
+\fnurl{spark-packages}{https://spark-packages.org/}.
+
+Es por ese motivo por el que hay un pequeño problema con \emph{KNN}: dicho
+paquete no tiene, por el momento, implementación de la interfaz
+\emph{MLWritable}, que permite guardar un modelo en disco. Aún así los módulos
+están preparados para que cuando dicha interfaz esté implementada, se puedan
+usar con este modelo sin problema. Por el momento, la experimentación con este
+modelo se ha realizado con la shell interactiva de \emph{Spark} sin mayor
+inconveniente.
+
+\begin{table}[]
+\centering
+\caption{Modelos junto a sus parámetros}
+\label{tab:modelos}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}ccc@{}}
+\toprule
+Algoritmo & Parámetros fijos & Parámetros a tunear \\ \midrule
+Regresión Logística & maxIter = 150 & regParam = (0.3, 0.5) \\
+Naive Bayes &  & Smoothing = (1, 2) \\
+Random Forest & numTrees = 150 & maxDepth = (5, 10) \\
+Gradient Boosting Tree & numTrees = 150 & maxDepth = (5, 10) \\
+Multilayer Perceptron & maxIter = 150 & Hidden Layers = (10,10) , (5, 4) \\
+K Nearest Neighbours &  & K = (3, 5) \\ \bottomrule
+\end{tabular}%
+}
+\end{table}

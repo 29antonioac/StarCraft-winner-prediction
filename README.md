@@ -16,5 +16,20 @@ typing
 install.packages("knitr")
 ```
 
-To execute all the code you need `Scala` and `Spark`. At the moment it's
-a work in progress.
+To execute all the code you need `Scala`, `Spark` and `Maven`.
+
+To execute it, open the `StarCraft-Analytics` folder with the `Scala-IDE`,
+compile it and execute
+
+```
+mvn package
+```
+
+under the same folder. After that, you only have to send the `.jar` to the
+`Spark` machine using `spark-submit`.
+
+```
+spark-submit --class analytics.modelling target/StarCraft-Analytics-0.0.1-SNAPSHOT.jar
+
+spark-submit --class analytics.testing target/StarCraft-Analytics-0.0.1-SNAPSHOT.jar
+```

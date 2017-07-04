@@ -269,3 +269,6 @@ TSWLatexianTemp*
 
 # Main tex (it's generated with the Rnw)
 proyecto.tex
+
+# knitr cache
+Report/cache

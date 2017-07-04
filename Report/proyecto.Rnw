@@ -2,7 +2,7 @@
 %\documentclass[a4paper,twoside,11pt,titlepage]{book}
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
-\usepackage[british, spanish]{babel}
+\usepackage[british, spanish, es-tabla]{babel}
 \usepackage{float}
 
 % \usepackage[style=list, number=none]{glossary} %
@@ -325,6 +325,6 @@ opts_chunk$set(fig.pos = 'H', cache=T, autodep=T)
 % \bibliographystyle{plain}
 
 
-\input{apendices/apendice}
+%\input{apendices/apendice}
 
 \end{document}

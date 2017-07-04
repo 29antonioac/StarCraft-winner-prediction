@@ -11,6 +11,8 @@ Las principales herramientas utilizadas en este trabajo han sido las siguientes.
   este documento sigue el paradigma de \emph{programación literaria},
   uniendo documento y programa, siendo muy cómodo de escribir y leer.
   \item MariaDB como sistema gestor de bases de datos relacionales (SQL).
+  \item Git como sistema de control de versiones, tanto para el software como
+  para la memoria. Todo está disponible en \fnurl{GitHub}{https://github.com/analca3/StarCraft-winner-prediction}.
 \end{itemize}
 
 Se han escogido estas herramientas por ser el estado del arte en cada uno de los

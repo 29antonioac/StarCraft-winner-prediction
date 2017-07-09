@@ -350,6 +350,8 @@ en~\ref{cap:metodologia}, se ha utilizado la simbiosis de \emph{Scala},
 en \emph{Big Data} en entornos distribuidos sea similar a hacerlo en un
 entorno centralizado.
 
+% Vamos a ver, si en el resumen dices que es Big Data, ¿por qué dices
+% aquí que no es? O lo es o no lo es... - JJ
 En un primer intento de sacar jugo a los datos tomados, se probó a utilizar
 la clásica combinación de \emph{R} y el archiconocido paquete \emph{caret},
 pero las implementaciones de algoritmos clásicos como \emph{Random Forest}

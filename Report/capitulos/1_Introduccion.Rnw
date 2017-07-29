@@ -58,5 +58,5 @@ desarrollar agentes utilizando \emph{Programación Genética},
 creando planes automáticamente que consigan una estrategia ganadora. Este tipo
 de algoritmos son muy costosos, ya que evalúan muchas de las soluciones del
 espacio de búsqueda, que en estos casos suelen ser de dimensión infinita. Aún
-así, consiguen buenos resultados, como se puede comprobar en~\citep{7317940}
-y~\citep{Fernandez-Ares2016}.
+así, consiguen buenos resultados, como se puede comprobar en~\citep{DBLP:conf/cig/Garcia-SanchezT15}
+y~\citep{DBLP:conf/evoW/Fernandez-AresG16}.

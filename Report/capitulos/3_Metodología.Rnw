@@ -557,7 +557,7 @@ usar con este modelo sin problema. Por el momento, la experimentación con este
 modelo se ha realizado con la shell interactiva de \emph{Spark} sin mayor
 inconveniente.
 
-\begin{table}[]
+\begin{table}[tbp]
 \centering
 \caption{Modelos junto a sus parámetros}
 \label{tab:modelos}

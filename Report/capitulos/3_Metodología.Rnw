@@ -127,7 +127,32 @@ bases de datos para conseguirlas de la manera más limpia posible. Las variables
 escogidas quedan resumidas en tabla~\ref{tab:features}.
 
 <<features>>=
-if(! exists("data.full")) data.full <- read.csv("../data/data_full.csv", colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
+if (! exists("data.full")) {
+  data.full.path <- "../../data/data_full.csv"
+  if (! file.exists(data.full.path)) {
+    data.pvp <- read.csv("../../data/data_pvp.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.pvt <- read.csv("../../data/data_pvt.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.pvz <- read.csv("../../data/data_pvz.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.tvt <- read.csv("../../data/data_tvt.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.tvz <- read.csv("../../data/data_tvz.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.zvz <- read.csv("../../data/data_zvz.csv", colClasses=c("integer",rep("numeric",28),"factor"))
+    data.full <- rbind(cbind(data.pvp, Races = "PvP"), cbind(data.pvt, Races = "PvT"),
+                       cbind(data.pvz, Races = "PvZ"), cbind(data.tvt, Races = "TvT"),
+                       cbind(data.tvz, Races = "TvZ"), cbind(data.zvz, Races = "ZvZ"))
+
+    data.full$ReplayID  <- as.factor(paste(data.full$Races,data.full$ReplayID,sep = "_"))
+
+    rm(data.pvp)
+    rm(data.pvt)
+    rm(data.pvz)
+    rm(data.tvt)
+    rm(data.tvz)
+    rm(data.zvz)
+    write.csv(data.full, data.full.path, row.names = FALSE)
+  }
+
+  data.full <- read.csv(data.full.path, colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
+}
 knitr::kable(colnames(data.full), format = "latex", caption = "Tabla con características seleccionadas y con su orden")
 @
 
@@ -205,8 +230,8 @@ Con todo esto, se puede comenzar con un análisis
 exploratorio de datos.
 
 <<loadReplaysFacet>>=
-if(! file.exists("../data/replays.melt.plots.rds")) {
-  if(! exists("data.full")) data.full <- read.csv("../data/data_full.csv", colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
+if(! file.exists("../../data/replays.melt.plots.rds")) {
+  if(! exists("data.full")) data.full <- read.csv("../../data/data_full.csv", colClasses=c("factor","integer",rep("numeric",27),"factor","factor"))
 
   replays.plot <- data.full[data.full$ReplayID %in% sample(unique(data.full$ReplayID[grepl("PvP",data.full$ReplayID)]),3),]
 
@@ -228,18 +253,18 @@ if(! file.exists("../data/replays.melt.plots.rds")) {
     gg
   })
 
-  saveRDS(replays.melt.plots, "../data/replays.melt.plots.rds")
+  saveRDS(replays.melt.plots, "../../data/replays.melt.plots.rds")
 }
-replays.melt.plots <- readRDS("../data/replays.melt.plots.rds")
+replays.melt.plots <- readRDS("../../data/replays.melt.plots.rds")
 @
 
 <<loadMetadata>>=
-if (! file.exists("../data/metadata.csv")) {
+if (! file.exists("../../data/metadata.csv")) {
   metadata <- data.full[, colnames(data.full) %in% c("ReplayID", "Duration", "Races")]
   metadata <- unique(metadata)
-  write.csv(metadata, "../data/metadata.csv", row.names = FALSE)
+  write.csv(metadata, "../../data/metadata.csv", row.names = FALSE)
 }
-metadata <- read.csv("../data/metadata.csv")
+metadata <- read.csv("../../data/metadata.csv")
 @
 
 En primer lugar se incluye en la figura~\ref{fig:replaysHistogram} un
@@ -248,7 +273,7 @@ del dataset. Incluye la distribución de las 6 posibles combinaciones de
 razas que se pueden dar en la partida.
 
 <<replaysHistogram, fig.cap = "Duración de las partidas del dataset">>=
-metadata <- read.csv("../data/metadata.csv")
+metadata <- read.csv("../../data/metadata.csv")
 gg <- ggplot(data=metadata) +
   geom_bar(aes(x=ReplayID,y=Duration,fill=Races), stat="identity", width = 0.75) +
   geom_hline(yintercept = mean(metadata$Duration), color = "red",linetype="dashed") +

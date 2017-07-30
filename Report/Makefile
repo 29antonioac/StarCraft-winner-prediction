@@ -12,4 +12,4 @@ proyecto.tex: proyecto.Rnw $(Rnw)
 	R -e 'library(knitr);knit("proyecto.Rnw")'
 
 install:
-	R -e 'install.packages(c("knitr","ggplot2","reshape2"))'
+	R -e 'install.packages(c("knitr","ggplot2","reshape2", "xtable"))'

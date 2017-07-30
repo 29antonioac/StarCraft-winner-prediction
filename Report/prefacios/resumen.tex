@@ -1,17 +1,52 @@
 % El primer párrafo de un resumen no resume el trabajo, es la motivació del mismo y correspondería más bien a la introducción.
-Los juegos siempre han sido objeto de estudio de los investigadores en
-muchos campos de la Ciencia: matemáticas, economía, psicología... En el campo
-de la Inteligencia Artificial es común utilizarlos como bancos de pruebas
-de algoritmos o teorías para solucionar problemas complejos, debido a su
-sencilla especificación, pero complejo modelado.
+
+% Los juegos siempre han sido objeto de estudio de los investigadores en
+% muchos campos de la Ciencia: matemáticas, economía, psicología... En el campo
+% de la Inteligencia Artificial es común utilizarlos como bancos de pruebas
+% de algoritmos o teorías para solucionar problemas complejos, debido a su
+% sencilla especificación, pero complejo modelado.
 
 % Eso hace que este resumen no sea suficiente. Usas términos muy genéricos como "Big Data". No mencionas la dimensión del problema, las decisiones que se han tomado
-En este trabajo se modelará el resultado de partidas del conocido juego de
-estrategia en tiempo real \emph{StarCraft}, utilizando aprendizaje supervisado
-con herramientas para trabajar en entornos de \emph{Big Data}, lo que nos
-permitirá trabajar con la cantidad de datos que se dispone sin problema.
+
+% En este trabajo se modelará el resultado de partidas del conocido juego de
+% estrategia en tiempo real \emph{StarCraft}, utilizando aprendizaje supervisado
+% con herramientas para trabajar en entornos de \emph{Big Data}, lo que nos
+% permitirá trabajar con la cantidad de datos que se dispone sin problema.
 
 % Una vez más, es un resumen. Este párrafo es tan genérico que se podría aplicar a una cantidad de trabajos considerable. "Más potentes" tampoco es previso, hay que decir qué conclusiones se han sacado sobre los predictores. ¿Son más potentes antes o después de aplicarlos? Recuerda "No Free Lunch"
-Se demostrará con este estudio que, con los datos y herramientas adecuadas,
-es posible predecir el resultado de estas partidas, además de explicar por qué
-utilizando los predictores más potentes para cada modelo. 
+
+% Se demostrará con este estudio que, con los datos y herramientas adecuadas,
+% es posible predecir el resultado de estas partidas, además de explicar por qué
+% utilizando los predictores más potentes para cada modelo.
+
+En este trabajo se ha propuesto modelar el resultado de partidas del conocido
+juego de estrategia en tiempo real \emph{StarCraft} utilizando aprendizaje
+supervisado, de forma que se pueda predecir el ganador de éstas usando
+solamente datos generados por los propios jugadores mientras compiten.
+
+Para conseguir esto se propone realizar un proceso de extracción del
+conocimiento o \emph{KDD} sobre una base de datos relacional lo suficientemente
+grande: contiene más de 4500 partidas, cada una con decenas de posibles
+características a utilizar. Se seleccionarán variables interesantes y, a la vez,
+fáciles de entender y utilizar, para realizar predicciones que sean tanto
+precisas como interpretables. Sólo así se podrá comprender mejor el desarrollo
+de este juego a la vez de conseguir predicciones útiles.
+
+Una vez recogidos y organizados los datos, se les aplicarán técnicas de
+aprendizaje que permitan extraer información interesante: tanto el ganador
+de las partidas en un momento temprano de éstas como las características que,
+a posteriori, dan más información sobre el resultado de éstas. Debido a la
+dimensión del problema, las técnicas a utilizar deben estar preparadas para
+tratar con grandes cantidades de datos, por lo que se utilizará el ecosistema
+de Apache para tal problema, \emph{Spark} junto a la biblioteca de aprendizaje
+\emph{MLlib}. Esta elección nos permitirá trabajar con grandes cantidades de
+datos sin que los limitados recursos de una computadora personal sea ningún
+impedimento.
+
+Como resultado del proyecto obtendremos una serie de modelos que son capaces
+de predecir el ganador de una partida con una precisión bastante alta. Además,
+algunos de estos modelos ofrecen también un ránking de las variables
+más importantes para cada uno. De esta manera se puede evaluar, para cada
+modelo, qué variables del problema son las más importantes. Esto nos ofrecerá
+distintos modos de ver el ganador de una partida y permitirá completar los
+análisis y trabajos que ya hay sobre este complejo videojuego.

@@ -131,12 +131,12 @@ Y por último, una comparación a lo largo del tiempo de la precisión de los
 distintos clasificadores.
 
 <<TimeComparisonAcc, fig.cap = "Comparación de los clasifiadores a lo largo del tiempo", fig.width = 10 >>=
-measures.names <- list.files("../../Spark-workspace/StarCraft-Analytics/", pattern = "measures_.*.csv")
+measures.names <- list.files("../../Spark-workspace/StarCraft-Analytics/measures/", pattern = "measures_.*.csv")
 measures.numbers <- sort(as.numeric(unlist(stringi::stri_extract_all_regex(measures.names, "[0-9]+"))))
 measures.data <- lapply(measures.numbers, function(number) cbind(Measure = c("Accuracy", "AUC", "F1"),
                                                                  Frames = number,
-                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures_",number, ".csv")),
-                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measuresKNN_",number, ".csv"))
+                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measures_",number, ".csv")),
+                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measuresKNN_",number, ".csv"))
                                                                  ))
 
 measures.full <- do.call(rbind, measures.data)
@@ -164,4 +164,4 @@ será suficiente con jugar 10 minutos aproximadamente.
 Además, en esta gráfica se ve la gran diferencia entre \emph{KNN} y el segundo
 mejor clasificador, \emph{Gradient Boosting}. Con 10 minutos de partida,
 \emph{KNN} es mejor clasificador que \emph{Gradient Boosting} utilizando todo
-el conocimiento de una partida. 
+el conocimiento de una partida.

@@ -6,7 +6,7 @@ se pueden observar los modelos entrenados junto a sus métricas de acierto
 y \emph{F1} sobre el conjunto de test.
 
 <<MeasuresData,results='asis'>>=
-measures <- read.csv("../../Spark-workspace/StarCraft-Analytics/measures.csv")
+measures <- read.csv("../../Spark-workspace/StarCraft-Analytics/measures/measures.csv")
 rownames(measures) <- c("Accuracy","AUC","F1")
 measures <- as.data.frame(t(measures))
 measures <- rbind(measures, c(0.9754953098794287,0.99235048718616,0.9754828794253172))

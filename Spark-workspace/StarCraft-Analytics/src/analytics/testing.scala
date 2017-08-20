@@ -45,6 +45,7 @@ object testing {
                         )
 
     val dataSchema = new StructType()
+      .add("ReplayID","string")
       .add("Duration","int")
       .add("Frame", "int")
       .add("Minerals", "int")
@@ -73,19 +74,35 @@ object testing {
       .add("EnemyObservedEnemyAirUnitValue", "int")
       .add("ObservedResourceValue", "double")
       .add("EnemyObservedResourceValue", "double")
-      .add("Races", "string")
       .add("Winner", "string")
-
-    println("Loading data...")
+      .add("Races", "string")
+      
+    println("Loading data")
     val trainData = spark.read.option("header","true")
       .option("inferSchema","false")
       .schema(dataSchema)
       .csv("trainData.csv")
 
-    val testData = spark.read.option("header","true")
+    val rawTestData = spark.read.option("header","true")
       .option("inferSchema","false")
       .schema(dataSchema)
       .csv("testData.csv")
+      
+    println("Filtering Test (if needed)")
+       
+    var strArgs = ""
+    
+    val testData = if (args.length > 0) {
+      println("Filter => " + args(0))
+      strArgs = "_" + args(0)
+      val limit:Double = args(0).toDouble
+      rawTestData.where($"Frame" < limit)
+    }
+    else {
+      rawTestData
+    }
+    
+    println("Loading models")
 
     val rf = CrossValidatorModel.load("model_rf_grid")
       .bestModel.asInstanceOf[PipelineModel]
@@ -119,6 +136,7 @@ object testing {
      */
 
 
+    println("Creating evaluators")
 
     val evaluator = new MulticlassClassificationEvaluator()
       .setMetricName("accuracy")
@@ -133,10 +151,16 @@ object testing {
     val evaluatorAUC = new BinaryClassificationEvaluator()
       .setLabelCol("indexedWinner")
       .setRawPredictionCol("rawPrediction")
+      
+    println("Getting predictions")
 
     val predictions = pipelines.map( _ transform testData)
+    
+    println("Evaluating accuracy")
 
     val accuracy = predictions.map( evaluator evaluate _ )
+    
+    println("Evaluating AUC")
 
     val AUC = predictions.map( p => {
       if (p.columns.contains("rawPrediction"))
@@ -144,8 +168,12 @@ object testing {
       else
         -1
     })
+    
+    println("Evaluating F1")
 
     val F1 = predictions.map( evaluatorF1 evaluate _ )
+    
+    println("Creating measures file")
 
     val csv = "RandomForest,LogisticRegression,NaiveBayes,GradientBoosting,MultilayerPerceptron\n" +
       accuracy.mkString(",") + "\n" +
@@ -153,7 +181,9 @@ object testing {
       F1.mkString(",") + "\n"
 
 
-    new java.io.PrintWriter("measures.csv") { write(csv); close() }
+    new java.io.PrintWriter("measures" + strArgs + ".csv") { write(csv); close() }
+    
+    println("Getting feature importances")
 
     // Extract GBT and RF models
     val gbtModel = gbt.stages(4).asInstanceOf[GBTClassificationModel]

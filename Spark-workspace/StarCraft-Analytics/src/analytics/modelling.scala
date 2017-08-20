@@ -31,6 +31,7 @@ object modelling {
       Logger.getLogger("akka").setLevel(Level.WARN)
 
     val dataSchema = new StructType()
+      .add("ReplayID","string")
       .add("Duration","int")
       .add("Frame", "int")
       .add("Minerals", "int")
@@ -59,8 +60,9 @@ object modelling {
       .add("EnemyObservedEnemyAirUnitValue", "int")
       .add("ObservedResourceValue", "double")
       .add("EnemyObservedResourceValue", "double")
-      .add("Races", "string")
       .add("Winner", "string")
+      .add("Races", "string")
+      
 
 
     val assembler = new VectorAssembler()
@@ -76,10 +78,11 @@ object modelling {
       .setOutputCol("features")
 
     println("Loading data")
+    val dataPath = "../../data/data_full.csv"
     val file = spark.read.option("header","true")
       .option("inferSchema","false")
       .schema(dataSchema)
-      .csv(args(0))
+      .csv(dataPath)
 
     // Split the data into training and test sets (30% held out for testing).
     val trainPath = "trainData.csv"

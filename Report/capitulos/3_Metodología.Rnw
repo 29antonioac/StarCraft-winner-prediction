@@ -287,6 +287,27 @@ combinación de razas enfrentadas en ésta. La duración no es un atributo predi
 que se vaya a usar, pero es posible que las razas implicadas tengan peso
 en los modelos finales.
 
+Además, se presenta un histograma en la figura~\ref{fig:durationHistogram} para
+dar una idea de la distribución de la
+duración de las partidas. Además se muestra el intervalo que, basado en el rango
+intercuartílico, determina qué datos son considerados anómalos. La distribución
+de las partidas normales es una Beta, mientras que las partidas anómalas no
+parecen seguir una distribución usual.
+
+<<durationHistogram, message = FALSE, fig.cap = "Distribución de la duración de las partidas">>=
+quantiles <- quantile(data.full$Duration)
+iqr <- IQR(data.full$Duration)
+
+ggplot(data.full, aes(Duration)) +
+  geom_histogram(colour = "black", fill = "red") +
+  geom_vline(xintercept = mean(data.full$Duration), colour = "blue", linetype = "dashed") +
+  geom_vline(xintercept = quantiles[2] - 1.5*iqr, colour = "black", linetype = "dashed") +
+  geom_vline(xintercept = quantiles[4] + 1.5*iqr, colour = "black", linetype = "dashed")
+
+
+
+@
+
 \newpage
 
 Ahora se tomarán tres partidas de manera aleatoria, y se echará un vistazo
@@ -375,18 +396,13 @@ en~\ref{cap:metodologia}, se ha utilizado la simbiosis de \emph{Scala},
 en \emph{Big Data} en entornos distribuidos sea similar a hacerlo en un
 entorno centralizado.
 
-% Vamos a ver, si en el resumen dices que es Big Data, ¿por qué dices
-% aquí que no es? O lo es o no lo es... - JJ
 En un primer intento de sacar jugo a los datos tomados, se probó a utilizar
 la clásica combinación de \emph{R} y el archiconocido paquete \emph{caret},
 pero las implementaciones de algoritmos clásicos como \emph{Random Forest}
 no eran capaces de manejar esta cantidad de datos, llenando la memoria
 de la máquina en cuestión de minutos. Este hecho ha sido un gran incentivo
 para tomar la decisión arriba propuesta: utilizar \emph{Spark} para el
-tratamiento de datos. Aunque cabe mencionar que el problema a estudiar \textbf{NO}
-es \emph{Big Data}, es bastante grande para tratarlo en una computadora personal.
-Por tanto, el usar herramientas destinadas al tratamiento de grandes cantidades
-de datos evitará tener problemas como los indicados.
+tratamiento de datos.
 
 Antes de comentar el modelado, organización de módulos y demás, se va a
 realizar una breve introducción a \emph{Spark}, cómo funciona y cómo se utiliza.

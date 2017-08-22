@@ -34,10 +34,15 @@ Contiene miles de partidas uno contra uno de todas las combinaciones de
 razas, organizadas como un conjunto de seis bases de datos relacionales.
 Estos datos son precisos y muy completos,
 por lo que la extracción de datos y la posterior organización de estos para que
-el modelado sea exitoso será fundamental. Además, los investigadores ofrecen
-todo el código del extractor de datos, por lo que la comprensión de los datos
-ha sido fluida, además de la facilidad de realizar un trabajo basado en estos
-datos al tener toda la información disponible.
+el modelado sea exitoso será fundamental. Por esta razón, la selección y
+organización de los datos debe constar como un objetivo muy importante: si los
+datos que utilizamos no son de calidad, no obtendremos información interesante
+de ellos.
+
+Además, los investigadores ofrecen
+todo el código y la información relevante del extractor de datos, por lo que
+la comprensión de los datos y la realización de un trabajo en base a estos
+ha sido fluida.
 
 Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
 se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo

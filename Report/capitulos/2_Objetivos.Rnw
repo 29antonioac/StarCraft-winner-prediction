@@ -30,7 +30,7 @@ mejor posición para ganar la partida.
 Para ello se utilizará
 una base de datos muy completa, pero no tan estudiada por parte de los
 investigadores, \citep{DBLP:conf/flairs/RobertsonW14}.
-Contiene miles de partidas dos contra dos de todas las combinaciones de
+Contiene miles de partidas uno contra uno de todas las combinaciones de
 razas, organizadas como un conjunto de seis bases de datos relacionales.
 Estos datos son precisos y muy completos,
 por lo que la extracción de datos y la posterior organización de estos para que

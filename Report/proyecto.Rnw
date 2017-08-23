@@ -287,6 +287,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 # opts_chunk$set(cache=TRUE, autodep=TRUE)
 # opts_chunk$set(fig.width=4, fig.height=3,fig.pos = '!hbt')
 opts_chunk$set(fig.pos = 'H', cache=T, autodep=T)
+options(scipen=999)
 @
 
 \cleardoublepage\pagenumbering{arabic}

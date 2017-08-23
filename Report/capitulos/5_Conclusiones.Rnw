@@ -3,24 +3,34 @@
 
 Sobre este estudio se pueden sacar varias conclusiones. La primera de ellas
 es que las características de los datos han sido bien escogidas y formadas.
-En particular los valores
-de unidades y construcciones, tanto reales como observados, colaboran para
-decidir el ganador de la partida con bastante peso.
+Esto quiere decir que para la información que se busca, que es el ganador
+de la partida, los atributos predictores son capaces de decidir con alta
+confianza, como hemos visto en~\ref{cap:resultados}.
+Para el modelo paramétrico con mejor precisión, \emph{Gradient Boosting},
+los predictores más fuertes son los valores de unidades y construcciones reales
+y observados. Un análisis de los predictores también sería de ayuda para mejorar
+trabajos presentados anteriormente, sobre todo los basados en algún tipo de
+evento de la partida, como~\citep{DBLP:conf/cig/SynnaeveB11a}
+y~\citep{DBLP:conf/aiide/StanescuHEGB13}.
 
 Las predicciones sobre estos datos son muy precisas, en particular utilizando
 un clasificador de tipo \emph{KNN}. Demuestra que, aunque sea simple, puede
-ser de mucha utilidad en determinados problemas. Con él se consiguen
-predicciones con una confianza muy alta. Pero lo realmente importante es otro
+ser de mucha utilidad en determinados problemas. Al basarse en la
+distancia entre datos, se comporta bien en problemas donde predictores cercanos
+dan resultados cercanos. El instante \emph{Frame} es un buen ejemplo: en dos
+instantes parecidos y con una configuración de la partida parecida, es muy
+probable que el resultado final sea el mismo. Con \emph{KNN} se consiguen
+predicciones con una confianza muy alta, pero lo realmente importante es otro
 hecho: es capaz de realizar estas predicciones sobre partidas muy poco
 desarrolladas. Como se ha comentado en~\ref{cap:resultados}, con sólo 10 minutos
 de juego es capaz de tener un acierto del 90\%. Este hecho nos ofrece una
 solución a un problema comentado en~\ref{cap:introduccion}: el tiempo de
-optimización de un \emph{bot} se vería reducido, en media, en un 20\%
-aproximadamente, por lo que la creación de este tipo de agentes utilizando
-metaheurísticas apropiadas sería casi 5 veces más rápida. No sólo es interesante
+optimización de un \emph{bot} se vería reducido al no tener que evaluar partidas
+completas, por lo que la creación de este tipo de agentes utilizando
+metaheurísticas apropiadas sería más rápida. No sólo es interesante
 por ahorrar tiempo, sino por utilizar ese mismo tiempo de manera más apropiada:
 el tiempo ahorrado se podría aprovechar para cambiar parámetros de los
-algoritmos y así recorrer el espacio de búsqueda de manera más apropiada para
+algoritmos y así recorrer el espacio de búsqueda de manera más provechosa para
 el problema.
 
 También se debería destacar, aunque se ha comentado en~\ref{cap:introduccion},
@@ -28,12 +38,21 @@ que el conjunto de datos estudiado es totalmente heterogéneo: se han utilizado
 todas las combinaciones de razas
 posible para entrenar el clasificador, además de un conjunto muy grande de
 instantes de tiempo de las partidas. Así se diferencia de los pocos trabajos
-previos en el ámbito de la predicción que no se basan en modelos gráficos.
+previos en el ámbito de la predicción que no se basan en modelos gráficos,
+como~\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, obteniendo además resultados
+mucho más alentadores: mayor precisión en las predicciones y más conocimiento
+aprendido al tener un conjunto de datos más diverso.
 Esto, además, ayuda a que el clasificador pueda generalizar mejor sobre nuevos
 datos extraídos en el futuro, ya que por mucho que se vuelquen esfuerzos en
 intentar crear un conjunto de datos heterogéneo, nunca representará
 completamente todos las posibles configuraciones que se pueden dar en una
-partida.
+partida. En el caso abordado, tal y como se comenta en~\ref{cap:metodologia},
+un 30\% de los datos se destinan a validar, no intervienen en el proceso de
+aprendizaje. Por tanto, la capacidad de generalización del modelo es un supuesto
+viable, como se puede ver en~\ref{cap:resultados}, más específicamente en las
+figuras~\ref{fig:MeasuresGraphics} y~\ref{fig:TimeComparisonAcc}, mostrando
+cómo se comportan los clasificadores entrenados sobre datos desconocidos para
+ellos.
 
 En resumen, varias vías de desarrollo futuro utilizando lo estudiado en este
 trabajo serías las siguientes:

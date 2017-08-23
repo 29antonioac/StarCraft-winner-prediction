@@ -139,6 +139,10 @@ measures.data <- lapply(measures.numbers, function(number) cbind(Measure = c("Ac
                                                                  read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measuresKNN_",number, ".csv"))
                                                                  ))
 
+avg.duration.frames <- mean(data.full$Duration)
+frames.to.mins <- 15*60
+avg.duration.mins <- avg.duration.frames / frames.to.mins
+
 measures.full <- do.call(rbind, measures.data)
 
 measures.melt <- reshape2::melt(measures.full, id.vars = c("Measure","Frames"), variable.name = "Classifier")
@@ -152,14 +156,19 @@ ggplot(subset(measures.melt, Measure == "Accuracy"), aes(Frames, value, col = Cl
 @
 
 Se ve claramente en la figura~\ref{fig:TimeComparisonAcc} como \emph{KNN} es
-capaz de clasificar con más de un 90\% de
-acierto con sólo 9000 frames de partida, unos 10 minutos. Cuando la media hemos
-visto que es de unos 44.000 frames, que equivalen a aproximadamente 43 minutos
-de partida. Esto significa que con aproximadamente un 20\% de la duración media
+capaz de clasificar con más de un
+\Sexpr{subset(measures.melt, Measure == "Accuracy"
+              & Classifier == "KNN"
+              & Frames == 9000)[1,"value"]*100}\% de
+acierto con sólo 9000 frames de partida, que a 15 frames por segundo equivalen
+a 10 minutos. Además, hemos visto que la media de la duración
+de las partidas es de \Sexpr{avg.duration.frames} frames, que equivalen a
+\Sexpr{avg.duration.mins} minutos
+de partida. Esto significa que con un \Sexpr{9000 / avg.duration.frames * 100}\%
+de la duración media
 de una partida es suficiente para saber el vencedor de ésta con una alta
 confianza. La consecuencia directa de esto es que se demuestra que no hace
-falta jugar una partida completa para saber quien ganará: 9 de cada 10 veces,
-será suficiente con jugar 10 minutos aproximadamente.
+falta jugar una partida completa para saber quién es más probable que gane.
 
 Además, en esta gráfica se ve la gran diferencia entre \emph{KNN} y el segundo
 mejor clasificador, \emph{Gradient Boosting}. Con 10 minutos de partida,

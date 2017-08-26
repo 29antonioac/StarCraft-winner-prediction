@@ -64,6 +64,8 @@
 \newcommand{\myProf}{Juan Julián Merelo Guervós}
 \newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación}
 \newcommand{\myKeywordsEng}{Prediction, learning from data, classification, strategy, planification}
+% What? No games? What kind of games? What kind of strategy? No
+% optimization? - JJ
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación}
 \newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de

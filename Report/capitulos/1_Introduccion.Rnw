@@ -45,6 +45,10 @@ crear un batallón numeroso de las unidades más básicas.
 %el objetivo de crear bots que puedan jugar automáticamente al
 %Starcraft. - JJ
 \emph{StarCraft} es objetivo de muchos investigadores por todos estos hechos,
+% Eso tampoco es interesante, ni, de hecho, se puede probar. Y un juego, en sí, tampoco es un
+% objetivo. Lo interesante es usar ese juego como un banco de pruebas
+% para desarrollar técnicas que se puedan aplicar a otro tipo de
+% problemas. - JJ
 ya que se unen las buenas valoraciones que tiene el juego entre los usuarios
 con la dificultad que presenta la creación de agentes o \emph{bots} que jueguen
 satisfactoriamente. Por ello, existen competiciones anuales que determinan cuál

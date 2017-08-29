@@ -274,3 +274,8 @@ proyecto.tex
 Report/cache
 
 **/auto/
+
+# Ficheros gordos generados
+data/data_full.csv
+data/metadata.csv
+data/replays.melt.plots.rds

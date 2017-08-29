@@ -2,7 +2,8 @@
 \label{cap:metodologia}
 
 Las principales herramientas utilizadas en este trabajo han sido las siguientes.
-
+% Decir qué herramientas se usan no es una metodología. Metodología es
+% decir cómo se va a decidir las herramientas que se van a usar - JJ
 \begin{itemize}
   \item \LaTeX \, como procesador de textos científico.
   \item \emph{Scala}, \emph{Spark} y \emph{MLlib} como ecosistema para el

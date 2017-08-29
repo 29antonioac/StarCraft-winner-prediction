@@ -19,11 +19,16 @@
 % es posible predecir el resultado de estas partidas, además de explicar por qué
 % utilizando los predictores más potentes para cada modelo.
 
+% Una vez más: el primer párrafo de un resumen es la motivación del mismo. ¿Por qué quiero hacer este trabajo o creo que es necesario? - Jj
 En este trabajo se ha propuesto modelar el resultado de partidas del conocido
+% Evita juicios de valor: "conocido", "famoso", "mejor", "peor" - JJ
 juego de estrategia en tiempo real \emph{StarCraft} utilizando aprendizaje
 supervisado, de forma que se pueda predecir el ganador de éstas usando
+% Estás adelantando la metodología, y usando un término que puede que el lector no conozca. Además, va de suyo: si tienes el resultado deseado, tienes que usar aprendizaje supervisado por narices. 
 solamente datos generados por los propios jugadores mientras compiten.
 
+% No digas "para", di por qué tienes que hacer eso. Ese conocimiento
+% está aquí y allí. He tenido que hacer esto para sacarlo - JJ
 Para conseguir esto se propone realizar un proceso de extracción del
 conocimiento o \emph{KDD} sobre una base de datos relacional lo suficientemente
 grande: contiene más de 4500 partidas, cada una con decenas de posibles
@@ -31,6 +36,19 @@ características a utilizar. Se seleccionarán variables interesantes y, a la ve
 fáciles de entender y utilizar, para realizar predicciones que sean tanto
 precisas como interpretables. Sólo así se podrá comprender mejor el desarrollo
 de este juego a la vez de conseguir predicciones útiles.
+% Un proceso de aprendizaje tiene varias fases: preparación o
+% extracción de los datos, extracción de características. No hables de
+% características "interesantes", sino de características que sean
+% independientes, expliquen la mayor parte de la varianza o hayan sido
+% extraidas con métodos de extracción de características.
+% Para obtener precicciones interpretables necesitas usar un modelo
+% que no sea una caja negra. No has dicho que sea ese el
+% objetivo. El esquema de un resumen es
+% 1, Existe este problema que nadie ha resuelto hasta ahora. 
+% 2. Quiero resolver este problema específico y la solución tiene que
+% tener estas características. Esos serán los objetivos del trabajo
+% 3. Voy a usar esta metodología que me permitirá hacerlo de forma
+% súperguay y de la mejor posible.
 
 Una vez recogidos y organizados los datos, se les aplicarán técnicas de
 aprendizaje que permitan extraer información interesante: tanto el ganador
@@ -43,10 +61,24 @@ de Apache para tal problema, \emph{Spark} junto a la biblioteca de aprendizaje
 datos sin que los limitados recursos de una computadora personal sea ningún
 impedimento.
 
+% Elegir algo tiene que ser un resultado, no partir de ahí. Un TFM
+% debe decir: "se examinarán diferentes técnicas aplicables en este
+% caso para escoger la que tenga las características que cumplan los
+% objetivos" - JJ
+
 Como resultado del proyecto obtendremos una serie de modelos que son capaces
-de predecir el ganador de una partida con una precisión bastante alta. Además,
+de predecir el ganador de una partida con una precisión bastante
+alta. Además,
+% Un resumen no es un teaser. Tienes que decir qué has obtenido, y qué
+% has aprendido en el proceso. "Usando la metodología propuesta, hemos
+% cumplido los objetivos planteados, probando que A y B son adecuados
+% para C" - JJ
 algunos de estos modelos ofrecen también un ránking de las variables
 más importantes para cada uno. De esta manera se puede evaluar, para cada
 modelo, qué variables del problema son las más importantes. Esto nos ofrecerá
 distintos modos de ver el ganador de una partida y permitirá completar los
 análisis y trabajos que ya hay sobre este complejo videojuego.
+% Esto es trabajo futuro. Además, estás planteando un objetivo del
+% trabajo. Si es un objetivo, al principio del resumen. Si es trabajo
+% futuro, no corresponde ponerlo en este resumen"
+

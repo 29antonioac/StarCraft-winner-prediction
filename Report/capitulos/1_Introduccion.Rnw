@@ -1,3 +1,9 @@
+% Sigue reglas de estilo
+% 1. Nada de coma entre sujeto y predicado.
+% 2. Puntos suspensivos son puntos. Después va en mayúscula. Y no se
+% deben usar en lenguaje formal. 
+% 3. Evita juicios de valor como "famosos". Di de forma precisa por
+% qué has elegido ese juego. Predecir resultados de StarCraft
 \chapter{Introducción}
 \label{cap:introduccion}
 
@@ -28,13 +34,30 @@ como el tiempo que se tarda en conseguir un determinado edificio, el instante
 en el que un jugador obtiene alguna unidad muy potente de su raza o incluso
 crear un batallón numeroso de las unidades más básicas.
 
+%Siempre tienes que tener una pregunta de investigación. A priori, no
+%tiene por qué ser cierto que se puedan predecir las partidas. Esas
+%preguntas de investigación se convierten en objetivos. Pregunta de
+%investigación: ¿Se puede predecir el resultado de una partida de
+%Starcraft? Objetivo: "Vamos a probar que usando una metodología
+%basada en el aprendizaje automático se puede predecir el
+%resultado". También el objetivo principal: Vamos a minimizar el
+%tiempo necesario para obtener el resultado final de una partida con
+%el objetivo de crear bots que puedan jugar automáticamente al
+%Starcraft. - JJ
 \emph{StarCraft} es objetivo de muchos investigadores por todos estos hechos,
+% Eso tampoco es interesante, ni, de hecho, se puede probar. Y un juego, en sí, tampoco es un
+% objetivo. Lo interesante es usar ese juego como un banco de pruebas
+% para desarrollar técnicas que se puedan aplicar a otro tipo de
+% problemas. - JJ
 ya que se unen las buenas valoraciones que tiene el juego entre los usuarios
 con la dificultad que presenta la creación de agentes o \emph{bots} que jueguen
 satisfactoriamente. Por ello, existen competiciones anuales que determinan cuál
 es el mejor \emph{bot} del juego durante ese año, comparando distintas formas
 de crear un plan que salga victorioso.
+% Por otro lado, este párrafo debería ir antes. Esta es la motivación
+% del mismo. Y es más, tienes que añadir citas de todo esto. - JJ
 
+% Esto es la introducción. El estado del arte debe ir más adelante. 
 En este ámbito existen muchas posibilidades de intentar resolver el problema.
 Una de las más utilizadas es la creación de modelos gráficos probabilísticos,
 en particular redes bayesianas, para predecir el ganador de una partida.
@@ -44,14 +67,19 @@ en los que se utilizan eventos importantes en la partida como los comentados
 anteriormente: algún edificio concreto, la presencia de unidad más fuerte de
 la raza o alguna sucesión de eventos que en conjunto sean importantes.
 
-Existe algún trabajo de predicción utilizando aprendizaje supervisado, como
+%Hombre, ya puesto podías citar nuestro trabajo
+%http://ieeexplore.ieee.org/abstract/document/7317940/ 
+
+Existe algún trabajo de predicción utilizando aprendizaje supervisado,
+% Existen miles. ¿En qué contexto es esto? RTS? - JJ
+como
 \citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el entorno es bastante
 homogéneo y controlado, por lo que es posible que no refleje
 completamente la diversidad que presenta \emph{StarCraft}.
 
 También existen algunos trabajos que buscan generación de planes o estrategias,
 basándose en predicciones del resultado de las partidas, como en
-\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}.
+\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}. % Un estado del arte no es una enumeración de trabajos que hagan cosas similares. Es una muestra de cómo y en qué líneas de investigación ha avanzado el campo, del cual se extrae un "estado del arte" que hay que superar - JJ
 
 Otro enfoque que le han dado algunos investigadores a este problema es el de
 desarrollar agentes utilizando \emph{Programación Genética},

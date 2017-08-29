@@ -15,4 +15,4 @@ install:
 	R -e 'install.packages(c("knitr","ggplot2","reshape2", "xtable"))'
 
 clean:
-	rm *.pdf cache/*
+	rm *.pdf *.tex cache/*

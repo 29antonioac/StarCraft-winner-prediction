@@ -83,38 +83,8 @@ object modelling {
       .option("inferSchema","false")
       .schema(dataSchema)
       .csv(dataPath)
-
-    // Split the data into training and test sets (30% held out for testing).
-    val trainPath = "trainData.csv"
-    val testPath = "testData.csv"
-
-    val Array(trainData, testData) = if (! new java.io.File(trainPath).exists || ! new java.io.File(testPath).exists) {
-      println("Splitting data")
-      val Array(trainData, testData) = file randomSplit Array(0.7, 0.3)
-
-      println("Writing to files")
-      trainData.write.option("header", "true").csv(trainPath)
-      testData.write.option("header", "true").csv(testPath)
-      Array(trainData, testData)
-    }
-    else {
-      println("Reading from existing files")
-      val trainData = spark.read.option("header","true")
-        .option("inferSchema","false")
-        .schema(dataSchema)
-        .csv(trainPath)
-
-      val testData = spark.read.option("header","true")
-        .option("inferSchema","false")
-        .schema(dataSchema)
-        .csv(testPath)
-
-      Array(trainData, testData)
-    }
-
-
-
-    val winnerIndexer = new StringIndexer()
+      
+        val winnerIndexer = new StringIndexer()
       .setInputCol("Winner")
       .setOutputCol("indexedWinner")
 
@@ -160,10 +130,10 @@ object modelling {
       .setFeaturesCol(featureIndexer.getOutputCol)
       .setMaxIter(150)
 
-    val knn = new KNNClassifier()
-      .setLabelCol(winnerIndexer.getOutputCol)
-      .setFeaturesCol(featureIndexer.getOutputCol)
-      .setTopTreeSize(trainData.count().toInt / 500)
+//    val knn = new KNNClassifier()
+//      .setLabelCol(winnerIndexer.getOutputCol)
+//      .setFeaturesCol(featureIndexer.getOutputCol)
+//      .setTopTreeSize(trainData.count().toInt / 500)
 
     val rf_paramGrid = new ParamGridBuilder()
       .addGrid(rf.maxDepth, Array(5, 10))
@@ -185,81 +155,87 @@ object modelling {
       .addGrid(mlp.layers, Array(Array(28,4,5,2),Array(28,10,10,2)))
       .build()
 
-    val knn_paramGrid = new ParamGridBuilder()
-      .addGrid(knn.k, Array(3,5))
-      .build()
+//    val knn_paramGrid = new ParamGridBuilder()
+//      .addGrid(knn.k, Array(3,5))
+//      .build()
+      
+    val sequence = 1 to 5
+    
+    sequence.map(n => {
 
-    val model_map = Map ("rf" -> Tuple2(rf, rf_paramGrid),
-                         "nb" -> Tuple2(nb, nb_paramGrid),
-                         "lr" -> Tuple2(lr, lr_paramGrid),
-                         "gbt" -> Tuple2(gbt, gbt_paramGrid),
-                         "mlp" -> Tuple2(mlp, mlp_paramGrid) //,
-                         //"knn" -> Tuple2(knn, knn_paramGrid) This is not writable ATM!
-                        )
-
-
-    val results = model_map.map(model => {
-      val model_path = "model_" + model._1 + "_grid"
-      if(! new java.io.File(model_path).exists) {
-        println("Fitting " + model_path)
-
-        val param:Array[ParamMap] = model._2._2
-
-        // Chain indexers and forest in a Pipeline.
-        val pipeline:Pipeline = new Pipeline()
-          .setStages(Array(racesIndexer, winnerIndexer, assembler, featureIndexer, model._2._1))
-
-        // evaluator
-        val evaluator = new MulticlassClassificationEvaluator()
-          .setMetricName("accuracy")
-          .setLabelCol("indexedWinner")
-          .setPredictionCol("prediction")
-
-        val crossValidator = new CrossValidator()
-          .setEstimator(pipeline)
-          .setEvaluator(evaluator)
-          .setEstimatorParamMaps(param)
-          .setNumFolds(10)
-
-
-        val timeStart = System.nanoTime
-        // Train model. This also runs the indexers.
-        val fitted_model = crossValidator fit trainData
-
-        val timeEnd = System.nanoTime
-
-        val elapsed = timeEnd - timeStart
-
-        println("Elapsed: " + elapsed + " seconds")
-
-        fitted_model.save(model_path)
-        (model._1, elapsed)
+      // Split the data into training and test sets (30% held out for testing).
+      val trainPath = "datasets/train_" + n.toString()
+      val testPath = "datasets/test_" + n.toString()
+  
+      val Array(trainData, testData) = if (! new java.io.File(trainPath).exists || ! new java.io.File(testPath).exists) {
+        println("Splitting data")
+        val Array(trainData, testData) = file randomSplit Array(0.7, 0.3)
+  
+        println("Writing to files")
+        trainData.write.option("header", "true").csv(trainPath)
+        testData.write.option("header", "true").csv(testPath)
+        Array(trainData, testData)
       }
-      else println(model_path + " already exists!")
+      else {
+        println("Reading from existing files")
+        val trainData = spark.read.option("header","true")
+          .option("inferSchema","false")
+          .schema(dataSchema)
+          .csv(trainPath)
+  
+        val testData = spark.read.option("header","true")
+          .option("inferSchema","false")
+          .schema(dataSchema)
+          .csv(testPath)
+  
+        Array(trainData, testData)
+      }
+    
+
+      val model_map = Map ("rf" -> Tuple2(rf, rf_paramGrid),
+                           "nb" -> Tuple2(nb, nb_paramGrid),
+                           "lr" -> Tuple2(lr, lr_paramGrid),
+                           "gbt" -> Tuple2(gbt, gbt_paramGrid),
+                           "mlp" -> Tuple2(mlp, mlp_paramGrid) //,
+                           //"knn" -> Tuple2(knn, knn_paramGrid) This is not writable ATM!
+                          )
+  
+  
+      model_map.map(model => {
+        val model_path = "models/model_" + model._1 + "_" + n.toString()
+        if(! new java.io.File(model_path).exists) {
+          println("Fitting " + model_path)
+  
+          val param:Array[ParamMap] = model._2._2
+  
+          // Chain indexers and forest in a Pipeline.
+          val pipeline:Pipeline = new Pipeline()
+            .setStages(Array(racesIndexer, winnerIndexer, assembler, featureIndexer, model._2._1))
+  
+          // evaluator
+          val evaluator = new MulticlassClassificationEvaluator()
+            .setMetricName("accuracy")
+            .setLabelCol("indexedWinner")
+            .setPredictionCol("prediction")
+  
+          val crossValidator = new CrossValidator()
+            .setEstimator(pipeline)
+            .setEvaluator(evaluator)
+            .setEstimatorParamMaps(param)
+            .setNumFolds(10)
+  
+  
+          // Train model. This also runs the indexers.
+          val fitted_model = crossValidator fit trainData
+  
+          fitted_model.save(model_path)
+        }
+        else println(model_path + " already exists!")
+      })
+    
     })
 
     println("Success!")
 
-    val csv:String = "Model,Time\n" + results.toSeq.mkString("\n")
-
-    new java.io.PrintWriter("timeElapsed.csv") { write(csv); close() }
-
-
-
-    // Make predictions.
-//    val predictions = model transform testData
-//
-//    val accuracy = evaluator evaluate predictions
-//
-//    val evaluatorAUC = new BinaryClassificationEvaluator()
-//      .setLabelCol("indexedWinner")
-//      .setRawPredictionCol("rawPrediction")
-//
-//    val AUC = if (predictions.columns.contains("rawPrediction")) evaluatorAUC evaluate predictions else -1
-//
-//
-//    println("Accuracy = " + accuracy)
-//    println("AUC = " + AUC)
-//
   }
 }

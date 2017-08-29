@@ -17,6 +17,7 @@ import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator,MulticlassC
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions
+import org.apache.spark.sql.Row
 
 import org.apache.spark.ml.classification.KNNClassifier
 
@@ -82,21 +83,7 @@ object knn {
                           ,"indexedRaces"
                         ))
       .setOutputCol("features")
-
-    println("Loading data")
-    val trainData = spark.read.option("header","true")
-      .option("inferSchema","false")
-      .schema(dataSchema)
-      .csv("trainData.csv")
-
-    val rawTestData = spark.read.option("header","true")
-      .option("inferSchema","false")
-      .schema(dataSchema)
-      .csv("testData.csv")
-          
-    
-
-
+ 
 
     val winnerIndexer = new StringIndexer()
       .setInputCol("Winner")
@@ -118,19 +105,9 @@ object knn {
       .setInputCol("prediction")
       .setOutputCol("predictedLabel")
 
-    val knn = new KNNClassifier()
-      .setLabelCol(winnerIndexer.getOutputCol)
-      .setFeaturesCol(featureIndexer.getOutputCol)
-      .setTopTreeSize(trainData.count().toInt / 500)
-      .setK(3)
 
-    
-    
-    // Chain indexers and forest in a Pipeline.
-    val pipeline:Pipeline = new Pipeline()
-      .setStages(Array(racesIndexer, winnerIndexer, assembler, featureIndexer, knn))
       
-    val knnModel = pipeline fit trainData
+    
 
     println("Creating evaluators")
 
@@ -138,45 +115,68 @@ object knn {
       .setMetricName("accuracy")
       .setLabelCol("indexedWinner")
       .setPredictionCol("prediction")
-
-    val evaluatorF1 = new MulticlassClassificationEvaluator()
-      .setMetricName("f1")
-      .setLabelCol("indexedWinner")
-      .setPredictionCol("prediction")
-
-    val evaluatorAUC = new BinaryClassificationEvaluator()
-      .setLabelCol("indexedWinner")
-      .setRawPredictionCol("rawPrediction")
       
     println("Getting predictions")
     
-    println("Filtering Test (if needed)")
-       
-    var strArgs = ""
+    val rddAcc = spark.sparkContext.parallelize((1 to 5).map(n => {
+      
+      val trainPath = "datasets/train_" + n.toString()
+      val testPath = "datasets/test_" + n.toString()
+      
+      println("Loading data")
+      val trainData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(trainPath)
+  
+      val rawTestData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(testPath)
+      
+      val knn = new KNNClassifier()
+        .setLabelCol(winnerIndexer.getOutputCol)
+        .setFeaturesCol(featureIndexer.getOutputCol)
+        .setTopTreeSize(trainData.count().toInt / 500)
+        .setK(3)
+
+      
+      
+      // Chain indexers and forest in a Pipeline.
+      val pipeline:Pipeline = new Pipeline()
+        .setStages(Array(racesIndexer, winnerIndexer, assembler, featureIndexer, knn))
+      
+      val knnModel = pipeline fit trainData
     
-    args(0).split(" ").map(a => {
+       
+      //var strArgs = ""
       
-      println("Testing with frames = " + a)
+      val row = Row.fromSeq((4500 to 85500 by 4500).union(Array(238556)).map(a => {
+        
+        println("Testing with frames = " + a.toString)
+        
+        //strArgs = "_" + a.toString
+        
+        val testData = rawTestData.where($"Frame" < a)
+        
+        val predictions = knnModel transform testData
+        
+        val accuracy = evaluator evaluate predictions
+        accuracy
+        
+      }))
+      row
+    }))
+    
+    var accSchema = new StructType()
+    (4500 to 85500 by 4500).union(Array(238556)).map(n => accSchema = accSchema.add(n.toString, "double"))
       
-      strArgs = "_" + a
-      
-      val testData = rawTestData.where($"Frame" < a.toDouble)
-      
-      val predictions = knnModel transform testData
-      
-      val accuracy = evaluator evaluate predictions
-      
-      val AUC = -1
-      
-      val F1 = evaluatorF1 evaluate predictions
-      
-      val csv = "KNN\n" +
-      accuracy + "\n" +
-      AUC + "\n" +
-      F1 + "\n"
-
-
-      new java.io.PrintWriter("measuresKNN" + strArgs + ".csv") { write(csv); close() }
-    })
+    
+    val dfAcc = spark.createDataFrame(rddAcc, accSchema)
+    
+    dfAcc.repartition(1).write.mode("overwrite").option("header","true").csv("measures/measuresKNN")
+    
+    
+    
   }
 }

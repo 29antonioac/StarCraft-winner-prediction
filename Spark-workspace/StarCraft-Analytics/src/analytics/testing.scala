@@ -8,12 +8,19 @@ import org.apache.spark.ml.classification.{MultilayerPerceptronClassificationMod
 import org.apache.spark.ml.evaluation.{BinaryClassificationEvaluator,MulticlassClassificationEvaluator}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions
+import org.apache.spark.sql.Row
 
 
 
 // OFF logging
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
+
+// Only for KNN
+import org.apache.spark.ml.feature.{IndexToString, StringIndexer, VectorIndexer}
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.classification.KNNClassifier
+import org.apache.spark.ml.Pipeline
 
 object testing {
   def DFtoSingleCSV(df:DataFrame, path:String) {
@@ -26,9 +33,9 @@ object testing {
       .appName("StarCraft winner prediction - Modelling")
       .getOrCreate()
 
-    val sqlContext = new org.apache.spark.sql.SQLContext(spark.sparkContext)
+    //val sqlContext = new org.apache.spark.sql.SQLContext(spark.sparkContext)
 
-    import sqlContext.implicits._
+    import spark.sqlContext.implicits._
 
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
@@ -77,54 +84,99 @@ object testing {
       .add("Winner", "string")
       .add("Races", "string")
       
-    println("Loading data")
-    val trainData = spark.read.option("header","true")
-      .option("inferSchema","false")
-      .schema(dataSchema)
-      .csv("trainData.csv")
+    
+    println("Creating evaluator")
 
-    val rawTestData = spark.read.option("header","true")
-      .option("inferSchema","false")
-      .schema(dataSchema)
-      .csv("testData.csv")
+    val evaluator = new MulticlassClassificationEvaluator()
+      .setMetricName("accuracy")
+      .setLabelCol("indexedWinner")
+      .setPredictionCol("prediction")
       
-    println("Filtering Test (if needed)")
-       
     var strArgs = ""
+      
+    val sequence = 1 to 5
     
-    val testData = if (args.length > 0) {
-      println("Filter => " + args(0))
-      strArgs = "_" + args(0)
-      val limit:Double = args(0).toDouble
-      rawTestData.where($"Frame" < limit)
-    }
-    else {
-      rawTestData
-    }
     
-    println("Loading models")
+    val rddAcc = spark.sparkContext.parallelize(sequence.map(n => {
+      
+      val trainPath = "datasets/train_" + n.toString()
+      val testPath = "datasets/test_" + n.toString()
+      
+      println("Loading data")
+      val trainData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(trainPath)
+  
+      val rawTestData = spark.read.option("header","true")
+        .option("inferSchema","false")
+        .schema(dataSchema)
+        .csv(testPath)
+      
+       
+      
+      
+      val testData = if (args.length > 0) {
+        println("Filter => " + args(0))
+        strArgs = "_" + args(0)
+        val limit:Double = args(0).toDouble
+        rawTestData.where($"Frame" < limit)
+      }
+      else {
+        rawTestData
+      }
+      
+      println("Loading models")
+      
+      // val model_path = "models/model_" + model._1 + "_" + n.toString()
 
-    val rf = CrossValidatorModel.load("model_rf_grid")
-      .bestModel.asInstanceOf[PipelineModel]
-      //.stages(4).asInstanceOf[RandomForestClassificationModel]
+      val rf = CrossValidatorModel.load("models/model_rf_" + n.toString())
+        //.bestModel.asInstanceOf[PipelineModel]
+        //.stages(4).asInstanceOf[RandomForestClassificationModel]
+  
+      val lr = CrossValidatorModel.load("models/model_lr_" + n.toString())
+        //.bestModel.asInstanceOf[PipelineModel]
+        //.stages(4).asInstanceOf[LogisticRegressionModel]
+  
+      val nb = CrossValidatorModel.load("models/model_nb_" + n.toString())
+        //.bestModel.asInstanceOf[PipelineModel]
+        //.stages(4).asInstanceOf[NaiveBayesModel]
+  
+      val gbt = CrossValidatorModel.load("models/model_gbt_" + n.toString())
+        //.bestModel.asInstanceOf[PipelineModel]
+        //.stages(4).asInstanceOf[GBTClassificationModel]
+  
+      val mlp = CrossValidatorModel.load("models/model_mlp_" + n.toString())
+        //.bestModel.asInstanceOf[PipelineModel]
+        //stages(4).asInstanceOf[MultilayerPerceptronClassificationModel
+     
+  
+      val pipelines = Array(rf, lr, nb, gbt, mlp)
+      
+      println("Getting predictions")
 
-    val lr = CrossValidatorModel.load("model_lr_grid")
-      .bestModel.asInstanceOf[PipelineModel]
-      //.stages(4).asInstanceOf[LogisticRegressionModel]
-
-    val nb = CrossValidatorModel.load("model_nb_grid")
-      .bestModel.asInstanceOf[PipelineModel]
-      //.stages(4).asInstanceOf[NaiveBayesModel]
-
-    val gbt = CrossValidatorModel.load("model_gbt_grid")
-      .bestModel.asInstanceOf[PipelineModel]
-      //.stages(4).asInstanceOf[GBTClassificationModel]
-
-    val mlp = CrossValidatorModel.load("model_mlp_grid")
-      .bestModel.asInstanceOf[PipelineModel]
-      //stages(4).asInstanceOf[MultilayerPerceptronClassificationModel
-
-    val pipelines = Array(rf, lr, nb, gbt, mlp)
+      val predictions = pipelines.map( _ transform testData)
+    
+      println("Evaluating accuracy")
+  
+      val accuracy = Row.fromSeq(predictions.map( evaluator evaluate _ ))
+      accuracy
+            
+    }))
+    
+    val accSchema = new StructType()
+      .add("RF", "double")
+      .add("LR", "double")
+      .add("NB", "double")
+      .add("GBT", "double")
+      .add("MLP", "double")
+      //.add("KNN", "double")
+      
+    //val dfAcc = spark.createDataFrame(rddAcc, accSchema)
+    val dfAcc = spark.createDataFrame(rddAcc, accSchema)
+    
+    dfAcc.repartition(1).write.mode("overwrite").option("header","true").csv("measures/measures" + strArgs)
+    
 
 
     /*
@@ -136,71 +188,28 @@ object testing {
      */
 
 
-    println("Creating evaluators")
-
-    val evaluator = new MulticlassClassificationEvaluator()
-      .setMetricName("accuracy")
-      .setLabelCol("indexedWinner")
-      .setPredictionCol("prediction")
-
-    val evaluatorF1 = new MulticlassClassificationEvaluator()
-      .setMetricName("f1")
-      .setLabelCol("indexedWinner")
-      .setPredictionCol("prediction")
-
-    val evaluatorAUC = new BinaryClassificationEvaluator()
-      .setLabelCol("indexedWinner")
-      .setRawPredictionCol("rawPrediction")
+    
       
-    println("Getting predictions")
 
-    val predictions = pipelines.map( _ transform testData)
     
-    println("Evaluating accuracy")
-
-    val accuracy = predictions.map( evaluator evaluate _ )
-    
-    println("Evaluating AUC")
-
-    val AUC = predictions.map( p => {
-      if (p.columns.contains("rawPrediction"))
-        evaluatorAUC evaluate p
-      else
-        -1
-    })
-    
-    println("Evaluating F1")
-
-    val F1 = predictions.map( evaluatorF1 evaluate _ )
-    
-    println("Creating measures file")
-
-    val csv = "RandomForest,LogisticRegression,NaiveBayes,GradientBoosting,MultilayerPerceptron\n" +
-      accuracy.mkString(",") + "\n" +
-      AUC.mkString(",") + "\n" +
-      F1.mkString(",") + "\n"
-
-
-    new java.io.PrintWriter("measures" + strArgs + ".csv") { write(csv); close() }
-    
-    println("Getting feature importances")
-
-    // Extract GBT and RF models
-    val gbtModel = gbt.stages(4).asInstanceOf[GBTClassificationModel]
-    val rfModel = rf.stages(4).asInstanceOf[RandomForestClassificationModel]
-    val nbModel = nb.stages(4).asInstanceOf[NaiveBayesModel]
-
-
-    val featureGBT = spark.sparkContext.parallelize(attribs zip gbtModel.featureImportances.toArray).toDF("Feature","Importance")
-    val featureRF = spark.sparkContext.parallelize(attribs zip rfModel.featureImportances.toArray).toDF("Feature","Importance")
-
-    val nb_aux = nbModel.theta.transpose.toArray.splitAt(28)
-    val featureNB = spark.sparkContext.parallelize(nb_aux._1 zip nb_aux._2).toDF("PA","PB")
-
-
-    featureGBT.repartition(1).write.mode("overwrite").option("header","true").csv("features_gbt")
-    featureRF.repartition(1).write.mode("overwrite").option("header","true").csv("features_rf")
-    featureNB.repartition(1).write.mode("overwrite").option("header","true").csv("features_nb")
+//    println("Getting feature importances")
+//
+//    // Extract GBT and RF models
+//    val gbtModel = gbt.stages(4).asInstanceOf[GBTClassificationModel]
+//    val rfModel = rf.stages(4).asInstanceOf[RandomForestClassificationModel]
+//    val nbModel = nb.stages(4).asInstanceOf[NaiveBayesModel]
+//
+//
+//    val featureGBT = spark.sparkContext.parallelize(attribs zip gbtModel.featureImportances.toArray).toDF("Feature","Importance")
+//    val featureRF = spark.sparkContext.parallelize(attribs zip rfModel.featureImportances.toArray).toDF("Feature","Importance")
+//
+//    val nb_aux = nbModel.theta.transpose.toArray.splitAt(28)
+//    val featureNB = spark.sparkContext.parallelize(nb_aux._1 zip nb_aux._2).toDF("PA","PB")
+//
+//
+//    featureGBT.repartition(1).write.mode("overwrite").option("header","true").csv("features_gbt")
+//    featureRF.repartition(1).write.mode("overwrite").option("header","true").csv("features_rf")
+//    featureNB.repartition(1).write.mode("overwrite").option("header","true").csv("features_nb")
 
 
 

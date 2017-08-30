@@ -9,11 +9,10 @@ make
 under the Report folder. You have to have `R` and `knitr` installed
 in your system.
 
-Install `R` with your package manager, and `knitr` using the `R` terminal,
-typing
+Install `R` with your package manager, and dependencies using
 
 ```
-install.packages("knitr")
+make install
 ```
 
 To execute all the code you need `Scala`, `Spark` and `Maven`.

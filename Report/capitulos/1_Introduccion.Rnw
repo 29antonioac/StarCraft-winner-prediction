@@ -125,5 +125,5 @@ espacio de búsqueda, que en estos casos suelen ser de dimensión infinita. Aún
 así, consiguen buenos resultados, como se puede comprobar en~\citep{DBLP:conf/cig/Garcia-SanchezT15}
 y~\citep{DBLP:conf/evoW/Fernandez-AresG16}. Este enfoque podría aprovechar
 el trabajo que aquí se presenta, ya que cualquier ahorro en tiempo de cómputo
-al optimizar es bienvenido, ya que se puede aprovechar el tiempo ahorrado para
-una optimización más
+al optimizar es bienvenido, ya que se puede ajustar la optimización para
+o bien explorar más o bien explotar más el espacio de búsqueda.

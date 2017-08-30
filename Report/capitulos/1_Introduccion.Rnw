@@ -1,13 +1,13 @@
 % Sigue reglas de estilo
 % 1. Nada de coma entre sujeto y predicado.
 % 2. Puntos suspensivos son puntos. Después va en mayúscula. Y no se
-% deben usar en lenguaje formal. 
+% deben usar en lenguaje formal.
 % 3. Evita juicios de valor como "famosos". Di de forma precisa por
 % qué has elegido ese juego. Predecir resultados de StarCraft
 \chapter{Introducción}
 \label{cap:introduccion}
 
-Dentro del campo de la Inteligencia Artificial, siempre se han utilizado juegos
+Dentro del campo de la Inteligencia Artificial siempre se han utilizado juegos
 como bancos de pruebas para algoritmos o metodologías. En general, los juegos
 parten de unas reglas sencillas, pero esconden dificultades que ponen a prueba
 los mejores algoritmos y teorías de los investigadores, como espacios de
@@ -18,12 +18,13 @@ su estudio es cuanto menos complicado: los juegos de estrategia en tiempo real.
 En general, en este tipo de juegos se comienza la partida con un solo
 edificio y varias unidades, siendo el objetivo formar el ejército más potente
 posible para derrotar al enemigo. Recorrer el mapa en busca de recursos,
-obtener edificios que den acceso a unidades más poderosas, mejorar el armamento,
-explorar el mapa para saber dónde están los enemigos... son sólo algunas de
+obtener edificios que den acceso a unidades más poderosas, mejorar el armamento
+o explorar el mapa para saber dónde están los enemigos son solo algunas de
 las posibilidades de este tipo de videojuegos.
 
-Uno de los juegos más famosos de este género es \emph{StarCraft}, un
-videojuego lanzado en 1998 y que ha sido instalado en millones de ordenadores.
+Un ejemplo de este género es \emph{StarCraft}, un
+videojuego lanzado en 1998 y que ha sido instalado en millones de
+\fnurl{ordenadores}{http://www.statisticbrain.com/blizzard-entertainment-statistics/}.
 En él existen tres razas, cada una con sus peculiaridades, con las que se
 buscará eliminar al enemigo haciendo uso de sus peculiares características.
 
@@ -32,7 +33,25 @@ ocultas que los convierten en entornos hostiles. En el caso particular de
 \emph{StarCraft}, existen factores que pueden decidir la partida
 como el tiempo que se tarda en conseguir un determinado edificio, el instante
 en el que un jugador obtiene alguna unidad muy potente de su raza o incluso
-crear un batallón numeroso de las unidades más básicas.
+crear un batallón numeroso de las unidades más básicas. Por la complejidad
+que esconde y por la valoración del juego entre jugadores, se organizan
+competiciones anuales donde se busca el \emph{bot} con mejor estrategia de
+dicho año. La más conocida es \fnurl{AIIDE}{http://www.cs.mun.ca/~dchurchill/starcraftaicomp/},
+que lleva organizándose desde el año 2011.
+
+Teniendo en mente el crear \emph{bots} para el juego, surge una pregunta.
+¿Se puede predecir el ganador de éstas sin jugar una partida completa? Eso
+ayudaría al desarrollo de \emph{bots}, ya que podría acelerarse el proceso de
+optimización al ahorrar tiempo de juego de partidas. Con una metodología
+basada en el aprendizaje supervisado, que se detalla en~\ref{sec:metodologia},
+se probará que es posible predecir el ganador de una partida. Y no sólo eso,
+sino que es posible hacerlo de forma precisa y en un momento temprano de una
+partida.
+
+Por otro lado, es importante también descubrir por qué gana un jugador con
+respecto al otro, lo que ha hecho mejor que el otro para conseguir la victoria.
+Esto también ayudaría en la creación de \emph{bots} al determinar qué
+características debe tener su batallón para vencer.
 
 %Siempre tienes que tener una pregunta de investigación. A priori, no
 %tiene por qué ser cierto que se puedan predecir las partidas. Esas
@@ -44,20 +63,22 @@ crear un batallón numeroso de las unidades más básicas.
 %tiempo necesario para obtener el resultado final de una partida con
 %el objetivo de crear bots que puedan jugar automáticamente al
 %Starcraft. - JJ
-\emph{StarCraft} es objetivo de muchos investigadores por todos estos hechos,
+% \emph{StarCraft} es objetivo de muchos investigadores por todos estos hechos,
 % Eso tampoco es interesante, ni, de hecho, se puede probar. Y un juego, en sí, tampoco es un
 % objetivo. Lo interesante es usar ese juego como un banco de pruebas
 % para desarrollar técnicas que se puedan aplicar a otro tipo de
 % problemas. - JJ
-ya que se unen las buenas valoraciones que tiene el juego entre los usuarios
-con la dificultad que presenta la creación de agentes o \emph{bots} que jueguen
-satisfactoriamente. Por ello, existen competiciones anuales que determinan cuál
-es el mejor \emph{bot} del juego durante ese año, comparando distintas formas
-de crear un plan que salga victorioso.
+% ya que se unen las buenas valoraciones que tiene el juego entre los usuarios
+% con la dificultad que presenta la creación de agentes o \emph{bots} que jueguen
+% satisfactoriamente. Por ello, existen competiciones anuales que determinan cuál
+% es el mejor \emph{bot} del juego durante ese año, comparando distintas formas
+% de crear un plan que salga victorioso.
 % Por otro lado, este párrafo debería ir antes. Esta es la motivación
 % del mismo. Y es más, tienes que añadir citas de todo esto. - JJ
 
-% Esto es la introducción. El estado del arte debe ir más adelante. 
+% Esto es la introducción. El estado del arte debe ir más adelante.
+% Dónde estaría bien? Lo pongo en una sección antes o después de los objetivos? - Antonio
+
 En este ámbito existen muchas posibilidades de intentar resolver el problema.
 Una de las más utilizadas es la creación de modelos gráficos probabilísticos,
 en particular redes bayesianas, para predecir el ganador de una partida.
@@ -68,18 +89,33 @@ anteriormente: algún edificio concreto, la presencia de unidad más fuerte de
 la raza o alguna sucesión de eventos que en conjunto sean importantes.
 
 %Hombre, ya puesto podías citar nuestro trabajo
-%http://ieeexplore.ieee.org/abstract/document/7317940/ 
+%http://ieeexplore.ieee.org/abstract/document/7317940/
+% Es el penúltimo que cito, DBLP:conf/cig/Garcia-SanchezT15 - Antonio
 
-Existe algún trabajo de predicción utilizando aprendizaje supervisado,
+Existen trabajos de predicción del ganador en \emph{StarCraft} utilizando
+aprendizaje supervisado,
 % Existen miles. ¿En qué contexto es esto? RTS? - JJ
+% En el contexto de StarCraft y del ganador. Predecir el ganador no
+% está tan estudiado como predecir la estrategia del contrario.
+% Además, no he encontrado trabajos donde mezclen todas las razas en un mismo
+% modelo, o donde utilicen solamente valores de recursos (que son valores
+% sencillos de utilizar y entender) - Antonio
 como
-\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el entorno es bastante
+\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15} o~\citep{sanchez2015predicting},
+aunque el entorno es bastante
 homogéneo y controlado, por lo que es posible que no refleje
 completamente la diversidad que presenta \emph{StarCraft}.
 
 También existen algunos trabajos que buscan generación de planes o estrategias,
 basándose en predicciones del resultado de las partidas, como en
-\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}. % Un estado del arte no es una enumeración de trabajos que hagan cosas similares. Es una muestra de cómo y en qué líneas de investigación ha avanzado el campo, del cual se extrae un "estado del arte" que hay que superar - JJ
+\citep{adaptativeStrategyPrediction} o en \citep{makingAndActing}. En el caso
+que aquí se aborda se trabaja más en decidir quién gana lo antes posible, y a
+ser posible, por qué.
+
+% Un estado del arte no es una enumeración de trabajos que hagan cosas similares. Es una muestra de cómo y en qué líneas de investigación ha avanzado el campo, del cual se extrae un "estado del arte" que hay que superar - JJ
+% Mejor ahora? Especifico un poco qué diferencias hay con lo que hacemos aquí,
+% ya que lo que es la predicción del ganador en este juego hay poquito hecho,
+% y lo que he visto utilizan enfoques distintos. - Antonio
 
 Otro enfoque que le han dado algunos investigadores a este problema es el de
 desarrollar agentes utilizando \emph{Programación Genética},
@@ -87,4 +123,7 @@ creando planes automáticamente que consigan una estrategia ganadora. Este tipo
 de algoritmos son muy costosos, ya que evalúan muchas de las soluciones del
 espacio de búsqueda, que en estos casos suelen ser de dimensión infinita. Aún
 así, consiguen buenos resultados, como se puede comprobar en~\citep{DBLP:conf/cig/Garcia-SanchezT15}
-y~\citep{DBLP:conf/evoW/Fernandez-AresG16}.
+y~\citep{DBLP:conf/evoW/Fernandez-AresG16}. Este enfoque podría aprovechar
+el trabajo que aquí se presenta, ya que cualquier ahorro en tiempo de cómputo
+al optimizar es bienvenido, ya que se puede aprovechar el tiempo ahorrado para
+una optimización más

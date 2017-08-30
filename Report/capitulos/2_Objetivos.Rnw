@@ -7,53 +7,79 @@
 \chapter{Objetivos}
 \label{cap:objetivos}
 
-En este trabajo se propone ampliar el estado del arte en el ámbito de la
-predicción del resultado de partidas de este videojuego, utilizando aprendizaje
-supervisado sobre un conjunto muy grande y heterogéneo de partidas de
-competición. El caso más parecido es el de
-\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el conjunto de datos es
-bastante más pequeño y controlado que el usado en este trabajo, como se
-comentó en~\ref{cap:introduccion}.
+% En este trabajo se propone ampliar el estado del arte en el ámbito de la
+% predicción del resultado de partidas de este videojuego, utilizando aprendizaje
+% supervisado sobre un conjunto muy grande y heterogéneo de partidas de
+% competición. El caso más parecido es el de
+% \citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, aunque el conjunto de datos es
+% bastante más pequeño y controlado que el usado en este trabajo, como se
+% comentó en~\ref{cap:introduccion}.
+%
+% Mejorar la predicción no sólo mejoraría el rendimiento de cualquiera de las
+% ideas presentadas anteriormente, sino que permitiría abordar otras nuevas
+% que no son posibles sin una predicción más precisa. Por ejemplo, el uso
+% de metaheurísticas para optimizar planes de un bot podría ser acelerado
+% si se sabe de antemano con una precisión alta quién va a ganar, ya que este
+% enfoque se basa en evaluar soluciones de una gran parte del espacio de búsqueda.
+%
+% Además, no es sólo es importante predecir. También un aspecto muy relevante
+% es conseguir determinar qué características de la partida hacen que la victoria
+% se decida para un jugador en concreto. Analizar los factores más importantes
+% de una partida puede apoyar mucho a los demás enfoques que se les ha dado
+% al problema de la creación de agentes autónomos que consigan la victoria en
+% los entornos más complejos posibles. Además, es el objetivo que más se acerca
+% al usuario normal del videojuego, ya que es abordable para un humano
+% enfocar su estrategia en función
+% de conseguir más información de estas variables y, por consecuencia, estar en
+% mejor posición para ganar la partida.
+%
+% % ¿El objetivo es usar una base de datos completa? ¿Ves como hay que
+% % formularlo de forma adecuada? - JJ
+% Para ello se utilizará
+% una base de datos muy completa, pero no tan estudiada por parte de los
+% investigadores, \citep{DBLP:conf/flairs/RobertsonW14}.
+% Contiene miles de partidas uno contra uno de todas las combinaciones de
+% razas, organizadas como un conjunto de seis bases de datos relacionales.
+% Estos datos son precisos y muy completos,
+% por lo que la extracción de datos y la posterior organización de estos para que
+% el modelado sea exitoso será fundamental. Por esta razón, la selección y
+% organización de los datos debe constar como un objetivo muy importante: si los
+% datos que utilizamos no son de calidad, no obtendremos información interesante
+% de ellos.
+%
+% Además, los investigadores ofrecen
+% todo el código y la información relevante del extractor de datos, por lo que
+% la comprensión de los datos y la realización de un trabajo en base a estos
+% ha sido fluida.
 
-Mejorar la predicción no sólo mejoraría el rendimiento de cualquiera de las
-ideas presentadas anteriormente, sino que permitiría abordar otras nuevas
-que no son posibles sin una predicción más precisa. Por ejemplo, el uso
-de metaheurísticas para optimizar planes de un bot podría ser acelerado
-si se sabe de antemano con una precisión alta quién va a ganar, ya que este
-enfoque se basa en evaluar soluciones de una gran parte del espacio de búsqueda.
+El principal objetivo de este trabajo es conseguir predicciones fiables y
+tempranas del resultado de partidas de \emph{StarCraft} utilizando aprendizaje
+supervisado. Para conseguir este resultado hay que cumplir los siguientes
+objetivos:
 
-Además, no es sólo es importante predecir. También un aspecto muy relevante
-es conseguir determinar qué características de la partida hacen que la victoria
-se decida para un jugador en concreto. Analizar los factores más importantes
-de una partida puede apoyar mucho a los demás enfoques que se les ha dado
-al problema de la creación de agentes autónomos que consigan la victoria en
-los entornos más complejos posibles. Además, es el objetivo que más se acerca
-al usuario normal del videojuego, ya que es abordable para un humano
-enfocar su estrategia en función
-de conseguir más información de estas variables y, por consecuencia, estar en
-mejor posición para ganar la partida.
+\begin{itemize}
+  \item Crear un conjunto de datos que pueda ser utilizado para modelar.
+  \item Crear modelos que sean capaces de sacar información útil a partir de
+  estos datos. En particular, el vencedor de una partida.
+  \item Restringir los instantes de tiempo al validar para asegurar que
+  sin conocer el estado final de la partida se puede predecir el ganador.
+\end{itemize}
 
-% ¿El objetivo es usar una base de datos completa? ¿Ves como hay que
-% formularlo de forma adecuada? - JJ
-Para ello se utilizará
-una base de datos muy completa, pero no tan estudiada por parte de los
-investigadores, \citep{DBLP:conf/flairs/RobertsonW14}.
-Contiene miles de partidas uno contra uno de todas las combinaciones de
-razas, organizadas como un conjunto de seis bases de datos relacionales.
-Estos datos son precisos y muy completos,
-por lo que la extracción de datos y la posterior organización de estos para que
-el modelado sea exitoso será fundamental. Por esta razón, la selección y
-organización de los datos debe constar como un objetivo muy importante: si los
-datos que utilizamos no son de calidad, no obtendremos información interesante
-de ellos.
-
-Además, los investigadores ofrecen
-todo el código y la información relevante del extractor de datos, por lo que
-la comprensión de los datos y la realización de un trabajo en base a estos
-ha sido fluida.
+Además, otro objetivo cubierto en este trabajo es determinar por qué un jugador
+gana al otro, qué características de su juego han sido determinantes. Esto se
+consigue en base a los modelos entrenados para resolver el objetivo principal: a
+los modelos que lo permitan, se les extraerán las características que definen
+la salida de estos y se compararán.
 
 Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
 se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
 de esta índole. Selección en~\ref{sec:seleccion}, preprocesado y transformación
 en~\ref{sec:preprocesamiento}, modelado en~\ref{sec:modelado} e
 interpretación y evaluación en~\ref{cap:resultados}.
+
+Una vez finalizado éste, se obtendrán varios modelos que son capaces de predecir
+el ganador. En particular, se obtendrá un modelo de tipo \emph{KNN} que será
+capaz de predecir con mucha fiabilidad utilizando sólo 10 minutos de partida.
+Además, un modelo de tipo \emph{Gradient Boosting} será capaz de hacerlo con
+menos precisión, pero nos aportará información relevante sobre qué
+características definen al ganador de una partida.

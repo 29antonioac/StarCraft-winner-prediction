@@ -286,6 +286,12 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
+readSparkData <- function(folder) {
+  dfs <- lapply(list.files(folder, pattern = "*.csv", full.names = TRUE), read.csv)
+  df <- do.call(rbind, dfs)
+  df
+}
+
 # opts_chunk$set(cache=TRUE, autodep=TRUE)
 # opts_chunk$set(fig.width=4, fig.height=3,fig.pos = '!hbt')
 opts_chunk$set(fig.pos = 'H', cache=T, autodep=T)

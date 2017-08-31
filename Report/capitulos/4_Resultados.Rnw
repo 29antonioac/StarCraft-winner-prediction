@@ -2,26 +2,69 @@
 \label{cap:resultados}
 
 En la figura~\ref{fig:MeasuresGraphics} y en la tabla~\ref{tab:measures}
-se pueden observar los modelos entrenados junto a sus métricas de acierto
-y \emph{F1} sobre el conjunto de test.
+se pueden observar los modelos entrenados junto a su precisión sobre los
+conjuntos de test.
 
-<<MeasuresData,results='asis'>>=
-measures <- read.csv("../../Spark-workspace/StarCraft-Analytics/measures/measures.csv")
-rownames(measures) <- c("Accuracy","AUC","F1")
-measures <- as.data.frame(t(measures))
-measures <- rbind(measures, c(0.9754953098794287,0.99235048718616,0.9754828794253172))
-rownames(measures)[6] <- "KNN"
-measures$Algorithm <- rownames(measures)
-measures$Params <- c("numTrees = 150, maxDepth = 10","maxIter = 150, regParam = 0.3",
-                     "Smoothing = 1", "numTrees = 150, maxDepth = 10",
-                     "Hidden layers = (10,10)", "K = 3")
-measures$AUC[measures$AUC == -1.0] <- 0.0
-xtable::xtable(measures[,c(5,1,3)],
-  caption = "Tabla con los algoritmos modelados y las medidas conseguidas",
-  table.placement="H",
-  label = "tab:measures" )
+<<prepareMeasures>>=
+library(reshape2)
+measures.names <- list.files("../../Spark-workspace/StarCraft-Analytics/measures", full.names = TRUE)
+measures.numbers <- sort(as.numeric(unlist(stringi::stri_extract_all_regex(measures.names, "[0-9]+"))))
+measures.full.path <- "../../Spark-workspace/StarCraft-Analytics/measures/measures_full.csv"
+
+if (! file.exists(measures.full.path)) {
+  measuresKNN <- readSparkData("../../Spark-workspace/StarCraft-Analytics/measures/measuresKNN")
+  measures.data <- lapply(measures.numbers, function(number) cbind(TestSet = 1:5,
+                                                                   Frames = number,
+                                                                   readSparkData(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measures_",number)),
+                                                                   KNN = measuresKNN[,paste0("X",number)]
+  ))
+  measures.full <- do.call(rbind, measures.data)
+  write.csv(measures.full, measures.full.path, row.names = FALSE)
+
+}
+measures.full <- read.csv(measures.full.path)
+
+max.duration <- max(data.full$Duration)
+avg.duration.frames <- mean(data.full$Duration)
+frames.to.mins <- 15*60
+avg.duration.mins <- avg.duration.frames / frames.to.mins
+
+measures.mean <- aggregate(measures.full[,3:8], by = list(Frames = measures.full$Frames), mean)
+measures.median <- aggregate(measures.full[,3:8], by = list(Frames = measures.full$Frames), median)
+measures.sd <- aggregate(measures.full[,3:8], by = list(Frames = measures.full$Frames), sd)
+measures.norm <- aggregate(measures.full[,3:8], by = list(Frames = measures.full$Frames), function(v) shapiro.test(v)$p.value > 0.05)
+
+mean.melt <- melt(measures.mean, id.vars = "Frames", variable.name = "Classifier", value.name = "Accuracy")
+median.melt <- melt(measures.median, id.vars = "Frames", variable.name = "Classifier", value.name = "Accuracy")
+sd.melt <- melt(measures.sd, id.vars = "Frames", variable.name = "Classifier", value.name = "SD")
+
+normality <- all(measures.norm[,2:7] == T)
+mean_or_median.sd <- merge( if (normality) mean.melt else median.melt,
+                            sd.melt,
+                            by = c("Frames", "Classifier"))
+
+
 @
 
+Se muestra la \Sexpr{if (normality) "media" else "mediana"} de la precisión para
+los conjuntos de test junto a la desviación estándar como medida de error.
+Se toma esta medida ya que los datos \Sexpr{if (! normality) "no"} están
+centrados en la media.
+
+<<MeasuresData,results='asis'>>=
+results <- subset(mean_or_median.sd, Frames == max.duration)
+
+params <- data.frame( Classifier = c("GBT","LR","NB","RF","MLP","KNN"),
+                      Params = c("numTrees = 150, maxDepth = 10","maxIter = 150, regParam = 0.3",
+                     "Smoothing = 1", "numTrees = 150, maxDepth = 10",
+                     "Hidden layers = (10,10)", "K = 3"))
+results <- merge(results, params, by = "Classifier")
+xtable::xtable(results[,-2],
+  caption = "Tabla con los algoritmos modelados y las medidas conseguidas",
+  table.placement="H",
+  label = "tab:measures",
+  digits = 6 )
+@
 
 
 En general, todos excepto \emph{Naive Bayes} se comportan decentemente, pero hay
@@ -35,13 +78,10 @@ comparaciones sencillas.
 
 
 <<MeasuresGraphics, fig.cap = "Medidas obtenidas con los diversos modelos">>=
-library(reshape2)
 
-measures.melt <- melt(id.var = "Algorithm",measures[,-c(2,5)])
-#colnames(measures) <- c("Algorithm","Measure","Value")
-#(measures.melt)
-ggplot(measures.melt, aes(Algorithm, value, fill = variable)) +
-  geom_bar(position=position_dodge(),stat = "identity") +
+ggplot(subset(mean_or_median.sd, Frames == max.duration), aes(Classifier, Accuracy, fill = Classifier)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin=Accuracy-SD, ymax=Accuracy+SD),width=.3) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 0.8, hjust = 0.8), axis.text.y = element_text(size = 8))
 @
@@ -130,37 +170,18 @@ en~\ref{cap:introduccion}.
 Y por último, una comparación a lo largo del tiempo de la precisión de los
 distintos clasificadores.
 
-<<TimeComparisonAcc, fig.cap = "Comparación de los clasifiadores a lo largo del tiempo", fig.width = 10 >>=
-measures.names <- list.files("../../Spark-workspace/StarCraft-Analytics/measures/", pattern = "measures_.*.csv")
-measures.numbers <- sort(as.numeric(unlist(stringi::stri_extract_all_regex(measures.names, "[0-9]+"))))
-measures.data <- lapply(measures.numbers, function(number) cbind(Measure = c("Accuracy", "AUC", "F1"),
-                                                                 Frames = number,
-                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measures_",number, ".csv")),
-                                                                 read.csv(paste0("../../Spark-workspace/StarCraft-Analytics/measures/measuresKNN_",number, ".csv"))
-                                                                 ))
-
-avg.duration.frames <- mean(data.full$Duration)
-frames.to.mins <- 15*60
-avg.duration.mins <- avg.duration.frames / frames.to.mins
-
-measures.full <- do.call(rbind, measures.data)
-
-measures.melt <- reshape2::melt(measures.full, id.vars = c("Measure","Frames"), variable.name = "Classifier")
-
-ggplot(subset(measures.melt, Measure == "Accuracy"), aes(Frames, value, col = Classifier)) +
-  geom_line() +
+<<TimeComparisonAcc, fig.cap = "Comparación de los clasificadores a lo largo del tiempo", fig.width = 10 >>=
+ggplot(subset(mean_or_median.sd, Frames != max.duration), aes(Frames, Accuracy, col = Classifier)) +
   geom_point() +
-  ylab("Accuracy") +
+  geom_line() +
+  geom_errorbar(aes(ymin=Accuracy-SD, ymax=Accuracy+SD)) +
   scale_x_continuous(breaks = measures.numbers) +
   scale_y_continuous(breaks = seq(0.4,0.9,by=0.05))
 @
 
 Se ve claramente en la figura~\ref{fig:TimeComparisonAcc} como \emph{KNN} es
-capaz de clasificar con más de un
-\Sexpr{subset(measures.melt, Measure == "Accuracy"
-              & Classifier == "KNN"
-              & Frames == 9000)[1,"value"]*100}\% de
-acierto con sólo 9000 frames de partida, que a 15 frames por segundo equivalen
+capaz de clasificar con una precisión de $\Sexpr{subset(mean_or_median.sd, Classifier == "KNN" & Frames == 9000)[1,"Accuracy"]} \pm \Sexpr{subset(mean_or_median.sd, Classifier == "KNN" & Frames == 9000)[1,"SD"]}$ con
+sólo 9000 frames de partida, que a 15 frames por segundo equivalen
 a 10 minutos. Además, hemos visto que la media de la duración
 de las partidas es de \Sexpr{avg.duration.frames} frames, que equivalen a
 \Sexpr{avg.duration.mins} minutos
@@ -174,3 +195,48 @@ Además, en esta gráfica se ve la gran diferencia entre \emph{KNN} y el segundo
 mejor clasificador, \emph{Gradient Boosting}. Con 10 minutos de partida,
 \emph{KNN} es mejor clasificador que \emph{Gradient Boosting} utilizando todo
 el conocimiento de una partida.
+
+Por último, se realiza un test de Friedman sobre los resultados con
+todos los instantes de tiempo, disponibles en la tabla~\ref{tab:acc} para ver
+si existe significación en alguno de ellos.
+
+<<Friedman, results = "asis">>=
+d <- as.matrix(subset(measures.full, Frames == max.duration)[,-c(1,2)])
+fr <- friedman.test(d)
+
+rownames(d) <- NULL
+
+xtable::xtable(d,
+  caption = "Tabla con las precisiones de los algoritmos en cada conjunto de test",
+  table.placement = "H",
+  label = "tab:acc",
+  digits = 6)
+@
+
+Con un p-valor de \Sexpr{I(fr$p.value)}, podemos afirmar que hay significación.
+Ya que la hay, veamos en la tabla~\ref{tab:pvalues} si entre pares también
+existe significación. Nótese que se utiliza la corrección del p-valor de
+\emph{Bonferroni}, para evitar errores al acumular pruebas.
+
+<<Pairwise, results = "asis">>=
+tam <- dim(d)
+groups <- rep(1:tam[2], each=tam[1])
+
+a <- pairwise.t.test(d, g = groups, paired = T)
+out <- a$p.value
+colnames(out) <- colnames(measures.full)[3:7]
+rownames(out) <- colnames(measures.full)[4:8]
+xtable::xtable(out,
+  caption = "Tabla de p-valores obtenidos al comparar muestras con un t-test",
+  table.placement="H",
+  label = "tab:pvalues",
+  digits = 6 )
+@
+
+Vistos los resultados de la tabla, podemos afirmar que para el nivel de
+significación común, 0.05, hay diferencias significativas entre todos los
+clasificadores excepto entre \emph{Regresión Logística} y \emph{Perceptrón
+Multicapa}. En cualquier caso al ser clasificadores que no se comportan bien
+con nuestro problema, no se tendrá en cuenta. Lo importante es que hay
+diferencias significativas entre los clasificadores que mejor se comportan,
+\emph{KNN} y \emph{Gradient Boosting Tree}.

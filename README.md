@@ -1,5 +1,12 @@
 # StarCraft-winner-prediction
+
 Using supervised learning to predict the winner of a match.
+
+## Download this repo
+
+You need to have `git-lfs` installed. You might get some warnings but it's not big deal, the files are downloades anyway.
+
+## Compile the report
 
 To see the report (in Spanish only), compile it using
 

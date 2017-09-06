@@ -67,7 +67,7 @@ xtable::xtable(results[,-2],
 @
 
 
-En general, todos excepto \emph{Naive Bayes} se comportan decentemente, pero hay
+En general, todos excepto \emph{Naïve Bayes} se comportan decentemente, pero hay
 dos claros ganadores: \emph{Gradient Boosting Tree} y \emph{KNN}. Este último
 ofrece una predicción muy precisa con un coste computacional bastante bajo,
 aunque hay que tener en cuenta que para un sistema en tiempo real, podría ser
@@ -157,7 +157,7 @@ ggplot(melt(features.nb, id.vars = "Feature"), aes(reorder(Feature,value),variab
 @
 
 
-En este caso, \emph{Naive Bayes} le da demasiada importancia a los valores
+En este caso, \emph{Naïve Bayes} le da demasiada importancia a los valores
 de recursos observados del mapa y al tiempo. Variables importantes presentes
 en los demás modelos no son importantes en este, lo cual implica tener casi
 la misma precisión que una moneda lanzada al aire. Esto es muy probable que

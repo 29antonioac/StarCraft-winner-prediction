@@ -58,11 +58,11 @@
 % Re-usable information
 % ********************************************************************
 \newcommand{\myTitle}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
-\newcommand{\myTitleEng}{Results prediction of real time strategy games' matches}
+\newcommand{\myTitleEng}{Results prediction of real time strategy games' matches} % Revisa el inglés!!! - JJ
 \newcommand{\myDegree}{Máster en Ciencia de Datos e Ingeniería de Computadores}
 \newcommand{\myName}{Antonio Álvarez Caballero}
 \newcommand{\myProf}{Juan Julián Merelo Guervós}
-\newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación}
+\newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación} % aprendizaje no se hace siempre sobre datos? - JJ
 \newcommand{\myKeywordsEng}{Prediction, learning from data, classification, strategy, planification}
 % What? No games? What kind of games? What kind of strategy? No
 % optimization? - JJ

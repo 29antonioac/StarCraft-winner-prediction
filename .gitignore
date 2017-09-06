@@ -279,3 +279,5 @@ Report/cache
 data/data_full.csv
 data/metadata.csv
 data/replays.melt.plots.rds
+
+Spark-workspace/StarCraft-Analytics/measures/measures_full.csv

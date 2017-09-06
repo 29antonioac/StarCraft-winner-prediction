@@ -59,27 +59,33 @@ objetivos:
 
 \begin{itemize}
   \item Crear un conjunto de datos que pueda ser utilizado para modelar.
+    % Un objetivo tiene que ser medible. Si un objetivo se cumple con un "Sí, o hemos hecho". No es un objetivo, es una tarea. También tienes que ver si realmente obtener los datos ha tenido dificultad suficiente y/o lo has hecho en otro lado (lo hiciste en el TFG, ¿no? - JJ
   \item Crear modelos que sean capaces de sacar información útil a partir de
   estos datos. En particular, el vencedor de una partida.
   \item Restringir los instantes de tiempo al validar para asegurar que
   sin conocer el estado final de la partida se puede predecir el ganador.
+  % en realidad, estos dos objetivos son una paráfrasis de lo que has dicho arriba. 
 \end{itemize}
 
 Además, otro objetivo cubierto en este trabajo es determinar por qué un jugador
-gana al otro, qué características de su juego han sido determinantes. Esto se
+gana al otro, qué características de su juego han sido determinantes. % Jolines, no puedes poner "estos son los objetivos" y luego "ah, también tengo este otro" - JJ
+% obj1: Entrenar modelos "caja blanca" que nos permitan averiguar cuales son los factores que predicen mejor la victoria. (Esto, por cierto, no lo has mencionado en ningún lado en la introducción. Si este es un objetivo, y es importante, debes hablar de ello en el estado del arte. Los trabajos como el nuestro y otros que se dedicaban a hacer bots, ¿qué hicieron en este sentido? - JJ
+Esto se
 consigue en base a los modelos entrenados para resolver el objetivo principal: a
 los modelos que lo permitan, se les extraerán las características que definen
 la salida de estos y se compararán.
 
 Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
 se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
-de esta índole. Selección en~\ref{sec:seleccion}, preprocesado y transformación
-en~\ref{sec:preprocesamiento}, modelado en~\ref{sec:modelado} e
+de esta índole. %Esto es obligatorio, y es una tarea. Los objetivos tienen subobjetivos o tareas. Por ejemplo, si el objetivo es modelo la tarea sería comparar diferentes modelos - JJ
+Selección en~\ref{sec:seleccion}, preprocesado y transformación
+en~\ref{sec:preprocesamiento}, %También es una subtarea que no has especificado. Cada uno de los objetivos tiene sus tareas - JJ
+modelado en~\ref{sec:modelado} e
 interpretación y evaluación en~\ref{cap:resultados}.
 
 Una vez finalizado éste, se obtendrán varios modelos que son capaces de predecir
 el ganador. En particular, se obtendrá un modelo de tipo \emph{KNN} que será
-capaz de predecir con mucha fiabilidad utilizando sólo 10 minutos de partida.
+capaz de predecir con mucha fiabilidad utilizando sólo 10 minutos de partida. % Sobre cuanto tiempo ? - JJ
 Además, un modelo de tipo \emph{Gradient Boosting} será capaz de hacerlo con
 menos precisión, pero nos aportará información relevante sobre qué
-características definen al ganador de una partida.
+características definen al ganador de una partida. % Esto es interesante, pero este capítulo es "objetivos" No debes meter espoilers. Si acaso dentro del objetivo 1 o 2 puedes aclarar que no necesariamente la misma metodología nos va a ayudar a alcanzar los dos objetivos. - JJ

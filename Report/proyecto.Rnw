@@ -309,6 +309,7 @@ options(scipen=999)
 <<Metodologia, child='capitulos/3_Metodología.Rnw'>>=
 @
 
+% Si hay dos objetivos. 1. modelo, que se soluciona con un método y 2. Mejora del tiempo, con otro diferente, deberías ponerlo en dos secciones diferentes - JJ
 <<Resultados, child='capitulos/4_Resultados.Rnw'>>=
 @
 

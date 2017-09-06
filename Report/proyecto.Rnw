@@ -302,8 +302,8 @@ options(scipen=999)
 <<Introduccion, child='capitulos/1_Introduccion.Rnw'>>=
 @
 
-<<Objetivos, child='capitulos/2_Objetivos.Rnw'>>=
-@
+% <<Objetivos, child='capitulos/2_Objetivos.Rnw'>>=
+% @
 
 <<Metodologia, child='capitulos/3_Metodología.Rnw'>>=
 @

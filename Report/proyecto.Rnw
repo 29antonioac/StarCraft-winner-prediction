@@ -58,9 +58,10 @@
 % Re-usable information
 % ********************************************************************
 \newcommand{\myTitle}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
-\newcommand{\myTitleEng}{Results prediction of real time strategy games' matches} % Revisa el inglés!!! - JJ
+\newcommand{\myTitleEng}{Prediction of outcomes in real-time strategy games} % Revisa el inglés!!! - JJ
 % Crees que está mal, o es que quieres otra opinión? - Antonio
 % Es que está mal - JJ
+% Mejor? - Antonio
 \newcommand{\myDegree}{Máster en Ciencia de Datos e Ingeniería de Computadores}
 \newcommand{\myName}{Antonio Álvarez Caballero}
 \newcommand{\myProf}{Juan Julián Merelo Guervós}

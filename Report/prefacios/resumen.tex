@@ -1,24 +1,26 @@
 % Una vez más: el primer párrafo de un resumen es la motivación del mismo. ¿Por qué quiero hacer este trabajo o creo que es necesario? - Jj
 % Evita juicios de valor: "conocido", "famoso", "mejor", "peor" - JJ
 % Estás adelantando la metodología, y usando un término que puede que el lector no conozca. Además, va de suyo: si tienes el resultado deseado, tienes que usar aprendizaje supervisado por narices.
-
+% Motivación es: Existe este problema en el mundo, que no ha sido resuelto o no a nuestra entera satisfacción. Nosotros creemos que de esta forma se puede solucionar. La motivación es esencial porque indica conocimiento del estado del arte y del problema. 
 En este trabajo se aborda el problema de la predicción del resultado en
 juegos de estrategia en tiempo real, en particular de \emph{StarCraft}, de
 forma que se pueda predecir el ganador de una partida sin completarla.
 En particular, se pretende minimizar el tiempo necesario para predecir el
 resultado final de una partida de manera precisa, con la motivación
-de mejorar el tiempo empleado en la creación de agentes autónomos para el juego.
+de mejorar el tiempo empleado en la creación de agentes autónomos para el juego. % Tienes que empezar por esta motivación. ¿Por qué este problema es importante? - JJ
 
 Además, se pretende explicar
 por qué un jugador gana frente a otro con una configuración determinada de la
-partida, por lo que se buscará que estos modelos sean interpretables.
+partida, por lo que se buscará que estos modelos sean interpretables. % No uses además. O es objetivo o no lo es. No es "como el Pisuerga pasa por Valladolid, vamos a hacer también esto". ¿Estás interesado en el modelo interpretable desde el principio? ¿Eso resuelve el problema que es la motivación de todo el trabajo? - JJ
 
 % No digas "para", di por qué tienes que hacer eso. Ese conocimiento
 % está aquí y allí. He tenido que hacer esto para sacarlo - JJ
 Hay que realizar un proceso de extracción del
 conocimiento o \emph{KDD} sobre una conjunto de datos lo suficientemente
 grande, ya que solo así se conseguirán predicciones fiables e información útil
-sobre el desarrollo de las partidas. Los datos escogidos forman parte de una
+sobre el desarrollo de las partidas. 
+% Si hablas de KDD, tendrás que formular parte del problema como un problema KDD. Tendrás que mostrar, en resultados y conclusiones, qué conocimiento has extraído. - JJ
+Los datos escogidos forman parte de una
 base de datos relacional con más de 4500 partidas, cada una con decenas de posibles
 características a utilizar. Se seleccionarán variables que a priori son
 interesantes y fáciles de entender, para realizar predicciones que sean tanto
@@ -36,6 +38,7 @@ precisas como interpretables.
 % tener estas características. Esos serán los objetivos del trabajo
 % 3. Voy a usar esta metodología que me permitirá hacerlo de forma
 % súperguay y de la mejor posible.
+% O aquí no has hecho nada o no lo has hecho bien. Sigues hablando de "interesantes" y no de variables "que reflejan toda la varianza". 
 
 Una vez recogidos y organizados los datos, se les aplicarán técnicas de
 aprendizaje que permitan extraer información interesante: tanto el ganador
@@ -54,11 +57,12 @@ impedimento.
 % objetivos" - JJ
 % Tengo que decantarme por un modelo en particular, o puedo exponer de
 % esta forma las ventajas de uno y de otro? - Antonio
+% Tendrás que decantarte por el que hayas elegido... - JJ
 
 Como resultado del proyecto obtendremos una serie de modelos que son capaces
 de predecir el ganador de una partida con una precisión bastante
 alta. En particular, modelos de tipo \emph{KNN} y de tipo \emph{Gradient Boosting}
-consiguen predicciones muy precisas y muy interpretables, respectivamente.
+consiguen predicciones muy precisas y muy interpretables, respectivamente. % ¿Pretendías originalmente conseguir las dos? ¿No has podido? ¿Por qué no es interpretable kNN? - JJ
 El primero de ellos consigue predicciones útiles en un estado muy temprano
 de las partidas, por lo que es muy adecuado para cumplir el objetivo principal:
 determinar el ganador sin jugar una partida completa.
@@ -66,7 +70,7 @@ Por otro lado, \emph{Gradient Boosting} consigue predicciones menos fiables,
 pero es un modelo interpretable. Por esta razón, se pueden ver qué
 características explican por qué un jugador gana al otro, cubriendo el
 segundo objetivo del trabajo.
-
+% Te recuerdo que no hay dos objetivos en este resumen, sino un objetivo y "Además". Deja claro cuál es el objetivo (modelo rápido e interpretable), aunque al final te conformas con dos subobjetivos: modelo rápido o modelo interpretable - JJ
 
 
 % Un resumen no es un teaser. Tienes que decir qué has obtenido, y qué
@@ -74,7 +78,7 @@ segundo objetivo del trabajo.
 % cumplido los objetivos planteados, probando que A y B son adecuados
 % para C" - JJ
 % ¿Es suficiente tal y como lo expongo? - Antonio
-
+% Casi, pero no del todo - JJ
 % Esto es trabajo futuro. Además, estás planteando un objetivo del
 % trabajo. Si es un objetivo, al principio del resumen. Si es trabajo
 % futuro, no corresponde ponerlo en este resumen"

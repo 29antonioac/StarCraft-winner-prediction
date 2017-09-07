@@ -59,13 +59,12 @@
 % ********************************************************************
 \newcommand{\myTitle}{Predicción de resultados de partidas en juegos de estrategia en tiempo real}
 \newcommand{\myTitleEng}{Results prediction of real time strategy games' matches} % Revisa el inglés!!! - JJ
+% Crees que está mal, o es que quieres otra opinión? - Antonio
 \newcommand{\myDegree}{Máster en Ciencia de Datos e Ingeniería de Computadores}
 \newcommand{\myName}{Antonio Álvarez Caballero}
 \newcommand{\myProf}{Juan Julián Merelo Guervós}
-\newcommand{\myKeywords}{Predicción, aprendizaje sobre datos, clasificación, estrategia, planificación} % aprendizaje no se hace siempre sobre datos? - JJ
-\newcommand{\myKeywordsEng}{Prediction, learning from data, classification, strategy, planification}
-% What? No games? What kind of games? What kind of strategy? No
-% optimization? - JJ
+\newcommand{\myKeywords}{Predicción, aprendizaje, clasificación, juegos, estrategia en tiempo real, optimización}
+\newcommand{\myKeywordsEng}{Prediction, machine learning, classification, games, real time strategy, optimization}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación}
 \newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
@@ -303,8 +302,8 @@ options(scipen=999)
 <<Introduccion, child='capitulos/1_Introduccion.Rnw'>>=
 @
 
-<<Objetivos, child='capitulos/2_Objetivos.Rnw'>>=
-@
+% <<Objetivos, child='capitulos/2_Objetivos.Rnw'>>=
+% @
 
 <<Metodologia, child='capitulos/3_Metodología.Rnw'>>=
 @

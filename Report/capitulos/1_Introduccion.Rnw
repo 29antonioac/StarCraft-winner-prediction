@@ -14,47 +14,63 @@ los mejores algoritmos y teorías de los investigadores, como espacios de
 búsqueda enormes o información oculta.
 
 % Hasta ahora has hablado de juegos. Ahora mencionas videojuegos. También hablas de característica, pero no sé a qué te refieres. ¿Reglas sencillas? ¿Espacio de búsqueda enorme? ¿Información oculta? - JJ
-Existe un conjunto de videojuegos que cumplen esta característica, por lo que
-su estudio es cuanto menos complicado: los juegos de estrategia en tiempo real. % Complicado: juicio de valor. Alternativa: los juegos de estrategia en tiempo real (que pueden ser de ordenador o de tablero, en realidad) son un ejemplo de juegos que (tienen información oculta OR tienen reglas sencillas (esto también es un juicio de valor) OR tienen información oculta. 
-% Define estos juegos. Esta frase debería empezar por "Un juego de estrategia en tiempo real enfrenta a n jugadores, cada uno de los cuales tiene x. Se termina cuando y = 0 - JJ
-En general, en este tipo de juegos se comienza la partida con un solo
-edificio y varias unidades, siendo el objetivo formar el ejército más potente % potente o maniobrable o resistente. Una vez más, es poco preciso. El objetivo no es eso. El objetivo conseguir qu el enemigo sea derrotado. Para eso, tendrás que manejar unidades y edificios (o lo que sea) - JJ
-posible para derrotar al enemigo. Recorrer el mapa en busca de recursos,
+% Me lo había dejado en singular, quería referirme a todas en su conjunto - Antonio
+Existe un conjunto de juegos que cumplen estas características: los juegos de
+estrategia en tiempo real.
+Son juegos que enfrentan a varios jugadores, entre 2 y 4 en general,
+en los que el tiempo transcurre de forma continua, sin interrupciones para que los
+jugadores tomen decisiones. Cada uno parte con un solo
+edificio y varias unidades, siendo el objetivo derrotar al contrincante
+o contrincantes. La partida termina cuando hay un solo ejército en el mapa.
+Recorrer el mapa en busca de recursos,
 obtener edificios que den acceso a unidades más poderosas, mejorar el armamento
 o explorar el mapa para saber dónde están los enemigos son solo algunas de
 las posibilidades de este tipo de videojuegos.
 % Descríbelo en abstracto: un método para jugar a un juego tednrá que decir, en cada momento, en qué invierte los recursos/acciones de las unidades/X Y + Z - JJ
 
-% ¿Qué tienen estos juegos de interesantes en un contexto más amplio, de toma de decisiones? ¿Por qué has elegido este tipo de juego? - JJ
-Un ejemplo de este género es \emph{StarCraft}, un
+
+Este tipo de juegos presentan un reto debido a, como se ha comentado, que
+no hay interrupciones de ningún tipo para que los jugadores decidan sus acciones,
+el tiempo es continuo. Eso hace que la toma de decisiones deba ser rápida y
+fluida. Un ejemplo de este género es \emph{StarCraft}, un
 videojuego lanzado en 1998 y que ha sido instalado en millones de
 \fnurl{ordenadores}{http://www.statisticbrain.com/blizzard-entertainment-statistics/}.
 En él existen tres razas, cada una con sus peculiaridades, con las que se
-buscará eliminar al enemigo haciendo uso de sus peculiares características. %Este es el ejemplo que vas a usar. ¿Por qué no mencionas otro?
+buscará eliminar al enemigo haciendo uso de sus peculiares características.
+Otros ejemplos clásicos son la saga \emph{Age Of Empires}, ambientada en
+distintas épocas de la historia de la humanidad; o \emph{0 A.D}, que comprende
+desde 500 a.C hasta 500 d.C. Este último es libre, de código abierto y
+multiplataforma.
+
 
 Aunque el mecanismo sea sencillo, ya se ha comentado que siempre hay variables
-ocultas que los convierten en entornos hostiles. %si es así hay dos características, no una sola ocmo dices en el párrafo. - JJ
+ocultas que los convierten en entornos hostiles.
 En el caso particular de
 \emph{StarCraft}, existen factores que pueden decidir la partida
-como el tiempo que se tarda en conseguir un determinado edificio, % ¿Es oculto? ¿Tiene un factor aleatorio?  JJ
+como el tiempo que se tarda en conseguir un determinado edificio,
 el instante
 en el que un jugador obtiene alguna unidad muy potente de su raza o incluso
-crear un batallón numeroso de las unidades más básicas. Por la complejidad
+crear un batallón numeroso de las unidades más básicas. En principio,
+todas estas variables son ocultas entre jugadores, ya que no es un juego
+de información perfecta. Sólo se podrá obtener información del contrario si
+se va en su busca.
+
+Por la complejidad
 que esconde y por la valoración del juego entre jugadores, se organizan
 competiciones anuales donde se busca el \emph{bot} con mejor estrategia de
 dicho año. La más conocida es \fnurl{AIIDE}{http://www.cs.mun.ca/~dchurchill/starcraftaicomp/},
 que lleva organizándose desde el año 2011.
 
-Teniendo en mente el crear \emph{bots} % teniendo en mente ¿por qué? - JJ
-para el juego, surge una pregunta.
+Debido a la cantidad de \emph{bots} que compiten en este tipo de eventos,
+surge una pregunta.
 ¿Se puede predecir el ganador de éstas sin jugar una partida completa? Eso
-ayudaría al desarrollo de \emph{bots}, ya que podría acelerarse el proceso de
-optimización al ahorrar tiempo de juego de partidas. % creando "surrogates" que evalúen las posibilidades de un bot - JJ 
-Con una metodología
+ayudaría al desarrollo de éstos, ya que podría acelerarse el proceso de
+optimización al ahorrar tiempo de juego de partidas. % creando "surrogates" que evalúen las posibilidades de un bot - JJ
+Con una metodología                                   % pero no creamos surrogates, ni evaluamos bots que existen, sólo estamos prediciendo. No es nuestro enfoque - Antonio
 basada en el aprendizaje supervisado, que se detalla en~\ref{sec:metodologia},
 se probará que es posible predecir el ganador de una partida. Y no sólo eso,
-sino que es posible hacerlo de forma precisa y en un momento temprano de una
-partida. % ¿Suficientemente precisa? ¿Qué considerarías suficientemente precisa? - JJ
+sino que es posible hacerlo con una precisión del 90\% y en un momento
+temprano de una partida: sólo con 10 minutos.
 
 Por otro lado, es importante también descubrir por qué gana un jugador con
 respecto al otro, lo que ha hecho mejor que el otro para conseguir la victoria.
@@ -84,10 +100,41 @@ características debe tener su batallón para vencer.
 % Por otro lado, este párrafo debería ir antes. Esta es la motivación
 % del mismo. Y es más, tienes que añadir citas de todo esto. - JJ
 
+
+
+Con todo esto, nos planteamos una serie de objetivos. El primero y principal
+es conseguir predicciones fiables y tempranas del resultado de partidas de
+\emph{StarCraft} utilizando aprendizaje
+supervisado. Para conseguir esto hay que realizar las siguientes
+tareas:
+% Fiables y tempranas. ¿Tengo que escoger una cota a priori de lo que quiero obtener? No siempre sería posible, y no me parece bien utilizar datos obtenidos a posteriori - Antonio
+
+\begin{itemize}
+  \item Crear un conjunto de datos que pueda ser utilizado para modelar.
+  \item Crear modelos que sean capaces de sacar información útil a partir de
+  estos datos. En particular, el vencedor de una partida.
+  \item Restringir los instantes de tiempo al validar para asegurar que
+  sin conocer el estado final de la partida se puede predecir el ganador.
+\end{itemize}
+
+Además, otro objetivo a cubrir en este trabajo es determinar por qué un jugador
+gana al otro, qué características de su juego han sido determinantes. Esto se
+consigue en base a los modelos entrenados para resolver el objetivo principal: a
+los modelos que lo permitan, se les extraerán las características que definen
+la salida de estos y se compararán.
+
+Se detallará todo el proceso de descubrimiento de conocimiento (\emph{KDD}) que
+se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
+de esta índole. Selección en~\ref{sec:seleccion}, preprocesado y transformación
+en~\ref{sec:preprocesamiento}, modelado en~\ref{sec:modelado} e
+interpretación y evaluación en~\ref{cap:resultados}.
+
 % Esto es la introducción. El estado del arte debe ir más adelante.
 % Dónde estaría bien? Lo pongo en una sección antes o después de los objetivos? - Antonio
 % Después de los objetivos - JJ
 % Tienes que enunciar explícitamente el estado del arte, que se supone que es lo que debes avanzar. Sección o al menos subsección aparte - JJ
+
+\section{Estado del arte}
 En este ámbito existen muchas posibilidades de intentar resolver el problema.
 Una de las más utilizadas es la creación de modelos gráficos probabilísticos,
 en particular redes bayesianas, para predecir el ganador de una partida.
@@ -101,9 +148,9 @@ la raza o alguna sucesión de eventos que en conjunto sean importantes.
 %http://ieeexplore.ieee.org/abstract/document/7317940/
 % Es el penúltimo que cito, DBLP:conf/cig/Garcia-SanchezT15 - Antonio
 % Yo decía aquí  - JJ
+% ¿Por qué? El enfoque es totalmente distinto - Antonio
 
-Existen trabajos de predicción del ganador en \emph{StarCraft} utilizando
-aprendizaje supervisado,
+Hasta ahora se ha buscado predicción del ganador en \emph{StarCraft},
 % Existen miles. ¿En qué contexto es esto? RTS? - JJ
 % En el contexto de StarCraft y del ganador. Predecir el ganador no
 % está tan estudiado como predecir la estrategia del contrario.
@@ -114,8 +161,9 @@ aprendizaje supervisado,
 como
 \citep{DBLP:conf/cosecivi/Sanchez-Ruiz15} o~\citep{sanchez2015predicting},
 aunque el entorno es bastante
-homogéneo y controlado, por lo que es posible que no refleje
-completamente la diversidad que presenta \emph{StarCraft}. % Es posible no. O lo refleja o no lo refleja. - JJ
+homogéneo y controlado, ya que no combina todas las combinaciones entre razas
+ni tiene un conjunto de datos tan grande como el propuesto. Por estas razones,
+no refleja completamente la diversidad que presenta \emph{StarCraft}.
 
 También existen algunos trabajos que buscan generación de planes o estrategias,
 basándose en predicciones del resultado de las partidas, como en
@@ -123,15 +171,10 @@ basándose en predicciones del resultado de las partidas, como en
 que aquí se aborda se trabaja más en decidir quién gana lo antes posible, y a
 ser posible, por qué.
 
-% Un estado del arte no es una enumeración de trabajos que hagan cosas similares. Es una muestra de cómo y en qué líneas de investigación ha avanzado el campo, del cual se extrae un "estado del arte" que hay que superar - JJ
-% Mejor ahora? Especifico un poco qué diferencias hay con lo que hacemos aquí,
-% ya que lo que es la predicción del ganador en este juego hay poquito hecho,
-% y lo que he visto utilizan enfoques distintos. - Antonio
-% Sí, mejor - JJ
-
 Otro enfoque que le han dado algunos investigadores a este problema es el de
 desarrollar agentes utilizando \emph{Programación Genética},
-creando planes automáticamente que consigan una estrategia ganadora. % Volvemos a lo mismo: ¿Cuál es la relación de esto co ntu trabajo? Tienes que entender el estado del arte y decir de forma precisa como encaja tu trabajo en él. Tu trabajo va a servir para ayudar a la optimización de estrategias de bots en RTS. Argumento posible
+creando planes automáticamente que consigan una estrategia ganadora.
+% Volvemos a lo mismo: ¿Cuál es la relación de esto co ntu trabajo? Tienes que entender el estado del arte y decir de forma precisa como encaja tu trabajo en él. Tu trabajo va a servir para ayudar a la optimización de estrategias de bots en RTS. Argumento posible
 % Las líneas de investigación en este área han tendido a usar esta y esta metodología para bots.
 % Todas esas metodologías necesitan x tiempo para hallar el resultado, lo que impide la exploración..
 % Por eso han surgido formas de usar modelo subrogados de tal forma (o no hemos encontrado nada), que han mejorado el resultado X
@@ -145,4 +188,5 @@ el trabajo que aquí se presenta, ya que cualquier ahorro en tiempo de cómputo
 al optimizar es bienvenido, ya que se puede ajustar la optimización para
 o bien explorar más o bien explotar más el espacio de búsqueda.
 
-% Tiene que haber una conclusión, o una introducción al siguiente capítulo... 
+A partir de aquí, se detallará la metodología utilizada para conseguir los
+objetivos del trabajo aquí expuestos.

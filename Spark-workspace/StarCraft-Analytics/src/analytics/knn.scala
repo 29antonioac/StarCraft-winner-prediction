@@ -1,3 +1,8 @@
+/*
+ * author: Antonio Álvarez Caballero (a.k.a. analca3)
+ * license: GPLv3
+ */
+
 package analytics
 
 import org.apache.spark.ml.feature.VectorAssembler

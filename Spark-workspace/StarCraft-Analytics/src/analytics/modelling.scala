@@ -34,6 +34,20 @@ object modelling {
 
       Logger.getLogger("org").setLevel(Level.WARN)
       Logger.getLogger("akka").setLevel(Level.WARN)
+      
+    
+      
+    val FRAMES = (4500 to 85500 by 4500).union(Array(238556))
+    val MAX_ITERS = 5
+    val N_RACES = 6
+    val TEST_SIZE = 0.3
+    val CV_FOLDS = 10
+    
+    /* Fixed algorithm parameters */
+    val NUM_ITERS = 150
+    val MAX_MEMORY_MB = 1024
+    
+    /* -------------------------- */
 
     val dataSchema = new StructType()
       .add("ReplayID","string")
@@ -102,7 +116,7 @@ object modelling {
     val featureIndexer = new VectorIndexer()
       .setInputCol("features")
       .setOutputCol("indexedFeatures")
-      .setMaxCategories(6)
+      .setMaxCategories(N_RACES)
 
     // Convert indexed labels back to original labels.
     val labelConverter = new IndexToString()
@@ -113,8 +127,8 @@ object modelling {
     val rf = new RandomForestClassifier()
       .setLabelCol(winnerIndexer.getOutputCol)
       .setFeaturesCol(featureIndexer.getOutputCol)
-      .setNumTrees(150)
-      .setMaxMemoryInMB(1024)
+      .setNumTrees(NUM_ITERS)
+      .setMaxMemoryInMB(MAX_MEMORY_MB)
 
     val nb = new NaiveBayes()
       .setLabelCol(winnerIndexer.getOutputCol)
@@ -123,22 +137,24 @@ object modelling {
     val lr = new LogisticRegression()
       .setLabelCol(winnerIndexer.getOutputCol)
       .setFeaturesCol(featureIndexer.getOutputCol)
-      .setMaxIter(150)
+      .setMaxIter(NUM_ITERS)
 
     val gbt = new GBTClassifier()
       .setLabelCol(winnerIndexer.getOutputCol)
       .setFeaturesCol(featureIndexer.getOutputCol)
-      .setMaxIter(150)
+      .setMaxIter(NUM_ITERS)
 
     val mlp = new MultilayerPerceptronClassifier()
       .setLabelCol(winnerIndexer.getOutputCol)
       .setFeaturesCol(featureIndexer.getOutputCol)
-      .setMaxIter(150)
+      .setMaxIter(NUM_ITERS)
 
 //    val knn = new KNNClassifier()
 //      .setLabelCol(winnerIndexer.getOutputCol)
 //      .setFeaturesCol(featureIndexer.getOutputCol)
 //      .setTopTreeSize(trainData.count().toInt / 500)
+      
+    /* Grid of parameters of each algorithm */
 
     val rf_paramGrid = new ParamGridBuilder()
       .addGrid(rf.maxDepth, Array(5, 10))
@@ -163,8 +179,9 @@ object modelling {
 //    val knn_paramGrid = new ParamGridBuilder()
 //      .addGrid(knn.k, Array(3,5))
 //      .build()
+   /* ------------------------------------- */
       
-    val sequence = 1 to 5
+    val sequence = 1 to MAX_ITERS
     
     sequence.map(n => {
 
@@ -174,7 +191,7 @@ object modelling {
   
       val Array(trainData, testData) = if (! new java.io.File(trainPath).exists || ! new java.io.File(testPath).exists) {
         println("Splitting data")
-        val Array(trainData, testData) = file randomSplit Array(0.7, 0.3)
+        val Array(trainData, testData) = file randomSplit Array(1 - TEST_SIZE, TEST_SIZE)
   
         println("Writing to files")
         trainData.write.option("header", "true").csv(trainPath)
@@ -227,7 +244,7 @@ object modelling {
             .setEstimator(pipeline)
             .setEvaluator(evaluator)
             .setEstimatorParamMaps(param)
-            .setNumFolds(10)
+            .setNumFolds(CV_FOLDS)
   
   
           // Train model. This also runs the indexers.

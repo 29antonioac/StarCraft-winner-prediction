@@ -44,6 +44,8 @@ object testing {
 
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
+    
+    val MAX_ITERS = 5
 
 
     val attribs = Array("Frame","Minerals","Gas","Supply","TotalMinerals","TotalGas","TotalSupply",
@@ -99,7 +101,7 @@ object testing {
       
     var strArgs = ""
       
-    val sequence = 1 to 5
+    val sequence = 1 to MAX_ITERS
     
     
     val rddAcc = spark.sparkContext.parallelize(sequence.map(n => {
@@ -133,7 +135,6 @@ object testing {
       
       println("Loading models")
       
-      // val model_path = "models/model_" + model._1 + "_" + n.toString()
 
       val rf = CrossValidatorModel.load("models/model_rf_" + n.toString())
         //.bestModel.asInstanceOf[PipelineModel]
@@ -182,39 +183,6 @@ object testing {
     
     dfAcc.repartition(1).write.mode("overwrite").option("header","true").csv("measures/measures" + strArgs)
     
-
-
-    /*
-     *
-     * rf.featureImportances
-     * lr.weights
-     * nb.pi
-     * gbt.featureImportances
-     */
-
-
-    
-      
-
-    
-//    println("Getting feature importances")
-//
-//    // Extract GBT and RF models
-//    val gbtModel = gbt.stages(4).asInstanceOf[GBTClassificationModel]
-//    val rfModel = rf.stages(4).asInstanceOf[RandomForestClassificationModel]
-//    val nbModel = nb.stages(4).asInstanceOf[NaiveBayesModel]
-//
-//
-//    val featureGBT = spark.sparkContext.parallelize(attribs zip gbtModel.featureImportances.toArray).toDF("Feature","Importance")
-//    val featureRF = spark.sparkContext.parallelize(attribs zip rfModel.featureImportances.toArray).toDF("Feature","Importance")
-//
-//    val nb_aux = nbModel.theta.transpose.toArray.splitAt(28)
-//    val featureNB = spark.sparkContext.parallelize(nb_aux._1 zip nb_aux._2).toDF("PA","PB")
-//
-//
-//    featureGBT.repartition(1).write.mode("overwrite").option("header","true").csv("features_gbt")
-//    featureRF.repartition(1).write.mode("overwrite").option("header","true").csv("features_rf")
-//    featureNB.repartition(1).write.mode("overwrite").option("header","true").csv("features_nb")
 
 
 

@@ -1,6 +1,8 @@
 /*
  * author: Antonio Álvarez Caballero (a.k.a. analca3)
  * license: GPLv3
+ * 
+ * This is a temporary module. When spark-knn package implements MLWritable, it will be merged to the main modules.
  */
 
 package analytics
@@ -41,6 +43,12 @@ object knn {
 
       Logger.getLogger("org").setLevel(Level.WARN)
       Logger.getLogger("akka").setLevel(Level.WARN)
+      
+    val FRAMES = (4500 to 85500 by 4500).union(Array(238556))
+    val MAX_ITERS = 5
+    val N_RACES = 6
+    val K_KNN = 3
+    val TREESIZE_DENOM = 500 // Don't touch this value unless you know what are you doing!
 
     val dataSchema = new StructType()
       .add("ReplayID","string")
@@ -103,7 +111,7 @@ object knn {
     val featureIndexer = new VectorIndexer()
       .setInputCol("features")
       .setOutputCol("indexedFeatures")
-      .setMaxCategories(6)
+      .setMaxCategories(N_RACES)
 
     // Convert indexed labels back to original labels.
     val labelConverter = new IndexToString()
@@ -123,7 +131,9 @@ object knn {
       
     println("Getting predictions")
     
-    val rddAcc = spark.sparkContext.parallelize((1 to 5).map(n => {
+    val sequence = 1 to MAX_ITERS
+    
+    val rddAcc = spark.sparkContext.parallelize(sequence.map(n => {
       
       val trainPath = "datasets/train_" + n.toString()
       val testPath = "datasets/test_" + n.toString()
@@ -142,8 +152,8 @@ object knn {
       val knn = new KNNClassifier()
         .setLabelCol(winnerIndexer.getOutputCol)
         .setFeaturesCol(featureIndexer.getOutputCol)
-        .setTopTreeSize(trainData.count().toInt / 500)
-        .setK(3)
+        .setTopTreeSize(trainData.count().toInt / TREESIZE_DENOM)
+        .setK(K_KNN)
 
       
       
@@ -156,7 +166,7 @@ object knn {
        
       //var strArgs = ""
       
-      val row = Row.fromSeq((4500 to 85500 by 4500).union(Array(238556)).map(a => {
+      val row = Row.fromSeq(FRAMES.map(a => {
         
         println("Testing with frames = " + a.toString)
         
@@ -174,7 +184,7 @@ object knn {
     }))
     
     var accSchema = new StructType()
-    (4500 to 85500 by 4500).union(Array(238556)).map(n => accSchema = accSchema.add(n.toString, "double"))
+    FRAMES.map(n => accSchema = accSchema.add(n.toString, "double"))
       
     
     val dfAcc = spark.createDataFrame(rddAcc, accSchema)

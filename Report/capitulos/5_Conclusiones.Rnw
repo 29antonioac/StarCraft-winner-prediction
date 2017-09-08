@@ -5,80 +5,69 @@
 % y conviene empezar por enunciarlos. "Al principio de este trabajo
 % nos propusimos los siguientes objetivos para resolver un
 % problema...  " - JJ
-Sobre este estudio se pueden sacar varias conclusiones. La primera de ellas
-es que las características de los datos han sido bien escogidas y formadas. % Características "¿formadas?" - JJ
-Esto quiere decir que para la información que se busca, que es el ganador
-de la partida, los atributos predictores son capaces de decidir con alta
-confianza, como hemos visto en~\ref{cap:resultados}. %¿Qué es "alta"?
-                                %¿Qué nivel decidiste de antemano? - JJ
-Para el modelo paramétrico con mejor precisión, \emph{Gradient Boosting},
-los predictores más fuertes son los valores de unidades y construcciones reales
-y observados. Un análisis de los predictores también sería de ayuda para mejorar
-trabajos presentados anteriormente, sobre todo los basados en algún tipo de
-evento de la partida, como~\citep{DBLP:conf/cig/SynnaeveB11a}
-y~\citep{DBLP:conf/aiide/StanescuHEGB13}. % Este es el otro objetivo. 
-% Tendrías que decir algo sobre cómo las procesado los datos. ¿Usas
-% una ventana que corre? ¿Agregados temporales? ¿Sólo el último
-% instante? - JJ
-% También tendrías que decir por qué uno solo no cubre los dos
-% objetivos y si es un problema que haya dos. 
 
-Las predicciones sobre estos datos son muy precisas, en particular utilizando
-un clasificador de tipo \emph{KNN}. Demuestra que, aunque sea simple, puede
+Al principio de este trabajo propusimos los siguientes objetivos para resolver
+el problema de la predicción del resultado en partidas de \emph{StarCraft}.
+El primero y más importante fue conseguir predicciones fiables y tempranas del
+resultado de las partidas. Se ha conseguido predecir con un 90\% de precisión
+partidas sólo con 10 minutos jugados, cuando la media de la duración es de
+48 minutos. Esto se ha conseguido gracias a un clasificador de tipo \emph{KNN}
+y a un conjunto de datos con potencial: los predictores escogidos son capaces de
+determinar el ganador. \emph{KNN} demuestra que, aunque sea simple, puede
 ser de mucha utilidad en determinados problemas. Al basarse en la
 distancia entre datos, se comporta bien en problemas donde predictores cercanos
-dan resultados cercanos. % ¿Este es de ese tipo de problemas? ¿Qué
-                         % implica eso con respecto al problema? - JJ
-El instante \emph{Frame} es un buen ejemplo: en dos
+dan resultados cercanos. El instante \emph{Frame} es un buen ejemplo: en dos
 instantes parecidos y con una configuración de la partida parecida, es muy
-probable que el resultado final sea el mismo. Con \emph{KNN} se consiguen
-predicciones con una confianza muy alta, pero lo realmente importante es otro
-hecho: es capaz de realizar estas predicciones sobre partidas muy poco
-desarrolladas. Como se ha comentado en~\ref{cap:resultados}, con sólo
-10 minutos % ¿10 minutos es un 1% o un 90%? - JJ
-de juego es capaz de tener un acierto del 90\%. Este hecho nos ofrece una
-solución a un problema comentado en~\ref{cap:introduccion}: el tiempo de
-optimización de un \emph{bot} se vería reducido al no tener que evaluar partidas
-completas, por lo que la creación de este tipo de agentes utilizando
-metaheurísticas apropiadas sería más rápida. No sólo es interesante % no es "el problema planteado". Es uno de los objetivos - JJ
-por ahorrar tiempo, sino por utilizar ese mismo tiempo de manera más apropiada:
-el tiempo ahorrado se podría aprovechar para cambiar parámetros de los
-algoritmos y así recorrer el espacio de búsqueda de manera más provechosa para
-el problema.
+probable que el resultado final sea el mismo. Con los resultados obtenidos
+se puede afirmar que el clasficador tiene capacidad de generalización, como
+se ha comentado en~\ref{cap:resultados}, más específicamente en las
+figuras~\ref{fig:MeasuresGraphics} y~\ref{fig:TimeComparisonAcc}.
 
-También se debería destacar, aunque se ha comentado
-en~\ref{cap:introduccion}, % Esto no es una conclusión - JJ
-que el conjunto de datos estudiado es totalmente heterogéneo: se han utilizado
-todas las combinaciones de razas
-posible para entrenar el clasificador, además de un conjunto muy grande de
-instantes de tiempo de las partidas. Así se diferencia de los pocos trabajos
-previos en el ámbito de la predicción que no se basan en modelos gráficos,
-como~\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, obteniendo además resultados
-mucho más alentadores: mayor precisión en las predicciones y más conocimiento
-aprendido al tener un conjunto de datos más diverso.
-Esto, además, ayuda a que el clasificador pueda generalizar mejor sobre nuevos
-datos extraídos en el futuro, ya que por mucho que se vuelquen esfuerzos en
-intentar crear un conjunto de datos heterogéneo, nunca representará
-completamente todos las posibles configuraciones que se pueden dar en una
-partida. En el caso abordado, tal y como se comenta en~\ref{cap:metodologia},
-un 30\% de los datos se destinan a validar, no intervienen en el proceso de
-aprendizaje. Por tanto, la capacidad de generalización del modelo es un supuesto
-viable, como se puede ver en~\ref{cap:resultados}, más específicamente en las
-figuras~\ref{fig:MeasuresGraphics} y~\ref{fig:TimeComparisonAcc}, mostrando
-cómo se comportan los clasificadores entrenados sobre datos desconocidos para
-ellos.
+El siguiente objetivo propuesto fue determinar por qué un jugador gana a otro.
+Esto se ha resuelto extrayendo los predictores que dan más información sobre
+el ganador para cada modelo que así lo permita. Ya que \emph{KNN} no es un
+modelo interpretable se tomó el segundo modelo con más precisión,
+\emph{Gradient Boosting Tree}, y se le extrayeron las ganancias de cada
+predictor. Para este modelo, las características más importantes son los valores
+de unidades y edificios, tanto reales como observados.
+
+
+
+
+
+% También se debería destacar, aunque se ha comentado
+% en~\ref{cap:introduccion}, % Esto no es una conclusión - JJ
+% que el conjunto de datos estudiado es totalmente heterogéneo: se han utilizado
+% todas las combinaciones de razas
+% posible para entrenar el clasificador, además de un conjunto muy grande de
+% instantes de tiempo de las partidas. Así se diferencia de los pocos trabajos
+% previos en el ámbito de la predicción que no se basan en modelos gráficos,
+% como~\citep{DBLP:conf/cosecivi/Sanchez-Ruiz15}, obteniendo además resultados
+% mucho más alentadores: mayor precisión en las predicciones y más conocimiento
+% aprendido al tener un conjunto de datos más diverso.
+% Esto, además, ayuda a que el clasificador pueda generalizar mejor sobre nuevos
+% datos extraídos en el futuro, ya que por mucho que se vuelquen esfuerzos en
+% intentar crear un conjunto de datos heterogéneo, nunca representará
+% completamente todos las posibles configuraciones que se pueden dar en una
+% partida. En el caso abordado, tal y como se comenta en~\ref{cap:metodologia},
+% un 30\% de los datos se destinan a validar, no intervienen en el proceso de
+% aprendizaje. Por tanto, la capacidad de generalización del modelo es un supuesto
+% viable, como se puede ver en~\ref{cap:resultados}, más específicamente en las
+% figuras~\ref{fig:MeasuresGraphics} y~\ref{fig:TimeComparisonAcc}, mostrando
+% cómo se comportan los clasificadores entrenados sobre datos desconocidos para
+% ellos.
 
 En resumen, varias vías de desarrollo futuro utilizando lo estudiado en este
 trabajo serías las siguientes:
 
 \begin{itemize}
-  \item Crear o mejorar un bot competitivo utilizando las características
-  propuestas junto a un modelo de tipo \emph{KNN},
-  mejorando la gestión de la incertidumbre que presentan agentes reales,
-  pudiendo adaptar mejor su estrategia o hacerlo en un momento anterior.
   \item La predicción del ganador puede resultar muy útil en combinación
   con cualquier metaheurística. Al ser algoritmos que evalúan soluciones y
   recorren el espacio de búsqueda de manera inteligente, se puede acelerar el
   paso de evaluación si, con un clasificador fiable como \emph{KNN},
   se dan partidas por terminadas mucho antes de su finalización real.
+  \item Crear o mejorar un bot competitivo utilizando las características
+  propuestas junto a un modelo de tipo \emph{KNN},
+  mejorando la gestión de la incertidumbre que presentan agentes reales,
+  pudiendo adaptar mejor su estrategia o hacerlo en un momento anterior.
 \end{itemize}

@@ -1,30 +1,41 @@
-% Una vez más: el primer párrafo de un resumen es la motivación del mismo. ¿Por qué quiero hacer este trabajo o creo que es necesario? - Jj
-% Evita juicios de valor: "conocido", "famoso", "mejor", "peor" - JJ
-% Estás adelantando la metodología, y usando un término que puede que el lector no conozca. Además, va de suyo: si tienes el resultado deseado, tienes que usar aprendizaje supervisado por narices.
-% Motivación es: Existe este problema en el mundo, que no ha sido resuelto o no a nuestra entera satisfacción. Nosotros creemos que de esta forma se puede solucionar. La motivación es esencial porque indica conocimiento del estado del arte y del problema. 
-En este trabajo se aborda el problema de la predicción del resultado en
-juegos de estrategia en tiempo real, en particular de \emph{StarCraft}, de
-forma que se pueda predecir el ganador de una partida sin completarla.
-En particular, se pretende minimizar el tiempo necesario para predecir el
-resultado final de una partida de manera precisa, con la motivación
-de mejorar el tiempo empleado en la creación de agentes autónomos para el juego. % Tienes que empezar por esta motivación. ¿Por qué este problema es importante? - JJ
+% Motivación es: Existe este problema en el mundo, que no ha sido resuelto o no a nuestra entera satisfacción. Nosotros creemos que de esta forma se puede solucionar. La motivación es esencial porque indica conocimiento del estado del arte y del problema.
 
-Además, se pretende explicar
-por qué un jugador gana frente a otro con una configuración determinada de la
-partida, por lo que se buscará que estos modelos sean interpretables. % No uses además. O es objetivo o no lo es. No es "como el Pisuerga pasa por Valladolid, vamos a hacer también esto". ¿Estás interesado en el modelo interpretable desde el principio? ¿Eso resuelve el problema que es la motivación de todo el trabajo? - JJ
+En el ámbito de la creación de agentes inteligentes para resolver problemas,
+una de las muchas dificultades que existen es el tiempo que se tarda en conseguir
+una solución que supere las expectativas iniciales. Más específicamente,
+en la creación de agentes que juegan a determinados juegos, conocidos como
+\emph{bots}, también se presenta este problema, ya que necesitan jugar
+partidas completas para poder evaluarlos. Por tanto, se va a estudiar cómo
+reducir el tiempo necesario para saber el resultado de una partida de un
+juego de estrategia en tiempo real, \emph{StarCraft}, utilizando aprendizaje
+supervisado. Se buscará un modelo que sea capaz de predecir el ganador sin jugar
+toda la partida. Estos modelos deberían ser interpretables, ya que
+también se busca explicar por qué un jugador gana a otro.
+% En este trabajo se aborda el problema de la predicción del resultado en
+% juegos de estrategia en tiempo real, en particular de \emph{StarCraft}, de
+% forma que se pueda predecir el ganador de una partida sin completarla.
+% En particular, se pretende minimizar el tiempo necesario para predecir el
+% resultado final de una partida de manera precisa, con la motivación
+% de mejorar el tiempo empleado en la creación de agentes autónomos para el juego. % Tienes que empezar por esta motivación. ¿Por qué este problema es importante? - JJ
+
+% Además, se pretende explicar
+% por qué un jugador gana frente a otro con una configuración determinada de la
+% partida, por lo que se buscará que estos modelos sean interpretables.
+% No uses además. O es objetivo o no lo es. No es "como el Pisuerga pasa por Valladolid, vamos a hacer también esto". ¿Estás interesado en el modelo interpretable desde el principio? ¿Eso resuelve el problema que es la motivación de todo el trabajo? - JJ
 
 % No digas "para", di por qué tienes que hacer eso. Ese conocimiento
 % está aquí y allí. He tenido que hacer esto para sacarlo - JJ
 Hay que realizar un proceso de extracción del
 conocimiento o \emph{KDD} sobre una conjunto de datos lo suficientemente
 grande, ya que solo así se conseguirán predicciones fiables e información útil
-sobre el desarrollo de las partidas. 
+sobre el desarrollo de las partidas.
 % Si hablas de KDD, tendrás que formular parte del problema como un problema KDD. Tendrás que mostrar, en resultados y conclusiones, qué conocimiento has extraído. - JJ
+% No sé si te entiendo, ¿es que no he mostrado los resultados correctamente?
 Los datos escogidos forman parte de una
 base de datos relacional con más de 4500 partidas, cada una con decenas de posibles
-características a utilizar. Se seleccionarán variables que a priori son
-interesantes y fáciles de entender, para realizar predicciones que sean tanto
-precisas como interpretables.
+características a utilizar. Se seleccionarán variables utilizadas anteriormente
+por investigadores y alguna más que a priori parezcan interesantes para mejorar
+el estado del arte.
 % Un proceso de aprendizaje tiene varias fases: preparación o
 % extracción de los datos, extracción de características. No hables de
 % características "interesantes", sino de características que sean
@@ -38,7 +49,9 @@ precisas como interpretables.
 % tener estas características. Esos serán los objetivos del trabajo
 % 3. Voy a usar esta metodología que me permitirá hacerlo de forma
 % súperguay y de la mejor posible.
-% O aquí no has hecho nada o no lo has hecho bien. Sigues hablando de "interesantes" y no de variables "que reflejan toda la varianza". 
+% O aquí no has hecho nada o no lo has hecho bien. Sigues hablando de "interesantes" y no de variables "que reflejan toda la varianza".
+% El estudio inicial de qué variables se cogen se hizo por "vamos a intentar
+% mejorar este estudio, vamos a coger sus variables y unas pocas más" - Antonio
 
 Una vez recogidos y organizados los datos, se les aplicarán técnicas de
 aprendizaje que permitan extraer información interesante: tanto el ganador
@@ -62,8 +75,15 @@ impedimento.
 Como resultado del proyecto obtendremos una serie de modelos que son capaces
 de predecir el ganador de una partida con una precisión bastante
 alta. En particular, modelos de tipo \emph{KNN} y de tipo \emph{Gradient Boosting}
-consiguen predicciones muy precisas y muy interpretables, respectivamente. % ¿Pretendías originalmente conseguir las dos? ¿No has podido? ¿Por qué no es interpretable kNN? - JJ
-El primero de ellos consigue predicciones útiles en un estado muy temprano
+consiguen predicciones muy precisas y muy interpretables, respectivamente. No
+ha sido posible tener un único modelo preciso e interpretable, ya que \emph{KNN}
+se basa en la distancia entre observaciones, tomando cada muestra de validación
+y viendo cuáles de las de entrenamiento son las más cercanas.
+Por tanto, el objetivo principal pasan a ser dos: conseguir un modelo con gran
+precisión y por otro lado, uno interpretable.
+
+
+\emph{KNN} consigue predicciones útiles en un estado muy temprano
 de las partidas, por lo que es muy adecuado para cumplir el objetivo principal:
 determinar el ganador sin jugar una partida completa.
 Por otro lado, \emph{Gradient Boosting} consigue predicciones menos fiables,

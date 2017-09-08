@@ -115,9 +115,11 @@ tareas:
   estos datos. En particular, el vencedor de una partida.
   \item Restringir los instantes de tiempo al validar para asegurar que
   sin conocer el estado final de la partida se puede predecir el ganador.
+  \item Comparar los modelos obtenidos y realizar test estadísticos para
+  asegurarnos que existen diferencias significativas.
 \end{itemize}
 
-Además, otro objetivo a cubrir en este trabajo es determinar por qué un jugador
+El segundo objetivo a cubrir en este trabajo es determinar por qué un jugador
 gana al otro, qué características de su juego han sido determinantes. Esto se
 consigue en base a los modelos entrenados para resolver el objetivo principal: a
 los modelos que lo permitan, se les extraerán las características que definen
@@ -128,11 +130,6 @@ se ha realizado, siendo así acorde a los objetivos que se piden en un trabajo
 de esta índole. Selección en~\ref{sec:seleccion}, preprocesado y transformación
 en~\ref{sec:preprocesamiento}, modelado en~\ref{sec:modelado} e
 interpretación y evaluación en~\ref{cap:resultados}.
-
-% Esto es la introducción. El estado del arte debe ir más adelante.
-% Dónde estaría bien? Lo pongo en una sección antes o después de los objetivos? - Antonio
-% Después de los objetivos - JJ
-% Tienes que enunciar explícitamente el estado del arte, que se supone que es lo que debes avanzar. Sección o al menos subsección aparte - JJ
 
 \section{Estado del arte}
 En este ámbito existen muchas posibilidades de intentar resolver el problema.

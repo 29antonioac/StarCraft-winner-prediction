@@ -29,6 +29,7 @@ Hay que realizar un proceso de extracción del
 conocimiento o \emph{KDD} sobre una conjunto de datos lo suficientemente
 grande, ya que solo así se conseguirán predicciones fiables e información útil
 sobre el desarrollo de las partidas.
+
 % Si hablas de KDD, tendrás que formular parte del problema como un problema KDD. Tendrás que mostrar, en resultados y conclusiones, qué conocimiento has extraído. - JJ
 % No sé si te entiendo, ¿es que no he mostrado los resultados correctamente?
 Los datos escogidos forman parte de una
@@ -74,7 +75,8 @@ impedimento.
 
 Como resultado del proyecto obtendremos una serie de modelos que son capaces
 de predecir el ganador de una partida con una precisión bastante
-alta. En particular, modelos de tipo \emph{KNN} y de tipo \emph{Gradient Boosting}
+alta. En particular, modelos de tipo \emph{KNN} y de tipo
+\emph{Gradient Boosting Tree}
 consiguen predicciones muy precisas y muy interpretables, respectivamente. No
 ha sido posible tener un único modelo preciso e interpretable, ya que \emph{KNN}
 se basa en la distancia entre observaciones, tomando cada muestra de validación
@@ -86,7 +88,7 @@ precisión y por otro lado, uno interpretable.
 \emph{KNN} consigue predicciones útiles en un estado muy temprano
 de las partidas, por lo que es muy adecuado para cumplir el objetivo principal:
 determinar el ganador sin jugar una partida completa.
-Por otro lado, \emph{Gradient Boosting} consigue predicciones menos fiables,
+Por otro lado, \emph{Gradient Boosting Tree} consigue predicciones menos fiables,
 pero es un modelo interpretable. Por esta razón, se pueden ver qué
 características explican por qué un jugador gana al otro, cubriendo el
 segundo objetivo del trabajo.

@@ -1,44 +1,37 @@
-% Game have always been a target of researchers in a lot of Science fields:
-% mathematics, economy, psychology... In Artificial Intelligence is very usual
-% to use them as a testing bench for algorithms or theories to resolve complex
-% problems, due to their simple specification but complex modelling.
-%
-% In this work the results of a well-known real time strategy videogame will be
-% modelled,
-% \emph{StarCraft}, using supervised learning with \emph{Big Data} tools, which
-% will allow us to work with a very large dataset without problem.
-%
-% We will prove that with appropiate data and tools it is possible to
-% predict the outcome of matches, explaining why using the best predictors for
-% each model.
+In the field of intelligent agents creation to solve complex problems, a
+difficult one is the time to get a solution that exceeds initial expectations.
+Specifically, in the creation of agents that play games the problem is
+playing a whole match to evaluate them. We are going to study how to reduce
+the necessary time to know the winner of a match in a real-time strategy game,
+\emph{StarCraft}, using supervised learning. The goal is to get models which
+can predict the winner without playing the whole match. These models should be
+interpretable, because we want to explain why a player beats the other one.
 
-% No sé si está sincronizado con el español, pero tienes que seguir las reglas que he puesto en todos sitios. Motivación, objetivos, metodología, resultados, hilados como una narrativa. Además, modelar es uno de los objetivos. El otro es optimizar el tiempo necesario para obtener el resultado.
-In this work it has been proposed to model the matches' outcomes of the very
-well-known real time strategy videogame \emph{StarCraft}. Supervised learning
-will be used, so the winner of a match could be predicted using automatically
-generated data from the players.
+We have to do a complete Knowledge Discovery in Databases (\emph{KDD}) process
+over a large dataset, because it is the only way to get precise predictions and
+useful information about the match.
 
+Selected data are a piece of a big database with more than 4500 games, with
+tens of possible features to use. Previously used features
+by researches and more interesting ones will be taken to improve the state of
+the art.
 
-To do this it has been proposed to do a complete process of Knowledge Data
-Discovering \emph{KDD} on a relational database, which is very large: it
-% kdd = KNOWLEDGE DISCOVERY IN DATABASES!!!!! - JJ
-% Revisa el inglés, por favor. 
-contains more than 4500 matches, every one with a big amount of possible
-features to use. It will be selected interesant and understable features to
-get good predictions and explainable ones. In this way the game could be
-well-known and get useful predictions.
+Once the data is gathered and organized, we will apply techniques to get
+useful information: the winner of the match in an early stage of it and the
+predictors that give more information about the winner. Due to the dimension
+of the problem, the used techniques must be prepared to deal with large data,
+so we will use the Apache echosystem, \emph{Spark} and \emph{MLlib}. This
+choice allow us to deal with large datasets in a desktop computer.
 
-When the data is completely organised, it will apply techniques to extract
-useful information: the winner of a match in an early moment and the features
-that explain this prediction. Due to the problem's dimension, used techniques
-must be ready to deal with a big amount of data, so Apache ecosystem will
-be used: \emph{Spark} together with the machine learning library \emph{MLlib}.
-This choice will allow an usual desktop computer to deal with all this data
-without any problems.
+As a result of this project we will obtain some models which are able to
+predict the winner with high accuracy. In particular, \emph{KNN} gets high
+accuracy predictions, and \emph{Gradient Boosting Tree} gets interpretable ones.
+It was not possible to get one accurate and interpretable model at the same time,
+so the main objective is divided into two ones: obtaining an accurate model and
+getting an interpretable one.
 
-As a result of this proyect we will obtain a set of models which are able to
-predict the winner of a match with a big accuracy. Furthermore, some of this
-models have a ranking of features by importance. With this ranking, features
-could be analyzed for each model, allowing the researcher to understand better
-why a player wins, completing the previous analysis and works of this complex
-videogame.
+\emph{KNN} gets useful predictions in an early stage of the match, so it is
+suitable to accomplish the main objective: to determine the winner
+without playing the whole match. \emph{Gradient Boosting Tree} gets less
+accurate predictions, but offers a ranked set of features that are important
+to predict the winner, so the second objective is covered.

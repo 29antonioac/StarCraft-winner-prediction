@@ -1,39 +1,53 @@
 \chapter{Conclusiones y trabajo futuro}
 \label{cap:conclusiones}
 
+% Las conclusiones siempre tienen que corresponder con los objetivos,
+% y conviene empezar por enunciarlos. "Al principio de este trabajo
+% nos propusimos los siguientes objetivos para resolver un
+% problema...  " - JJ
 Sobre este estudio se pueden sacar varias conclusiones. La primera de ellas
-es que las características de los datos han sido bien escogidas y formadas.
+es que las características de los datos han sido bien escogidas y formadas. % Características "¿formadas?" - JJ
 Esto quiere decir que para la información que se busca, que es el ganador
 de la partida, los atributos predictores son capaces de decidir con alta
-confianza, como hemos visto en~\ref{cap:resultados}.
+confianza, como hemos visto en~\ref{cap:resultados}. %¿Qué es "alta"?
+                                %¿Qué nivel decidiste de antemano? - JJ
 Para el modelo paramétrico con mejor precisión, \emph{Gradient Boosting},
 los predictores más fuertes son los valores de unidades y construcciones reales
 y observados. Un análisis de los predictores también sería de ayuda para mejorar
 trabajos presentados anteriormente, sobre todo los basados en algún tipo de
 evento de la partida, como~\citep{DBLP:conf/cig/SynnaeveB11a}
-y~\citep{DBLP:conf/aiide/StanescuHEGB13}.
+y~\citep{DBLP:conf/aiide/StanescuHEGB13}. % Este es el otro objetivo. 
+% Tendrías que decir algo sobre cómo las procesado los datos. ¿Usas
+% una ventana que corre? ¿Agregados temporales? ¿Sólo el último
+% instante? - JJ
+% También tendrías que decir por qué uno solo no cubre los dos
+% objetivos y si es un problema que haya dos. 
 
 Las predicciones sobre estos datos son muy precisas, en particular utilizando
 un clasificador de tipo \emph{KNN}. Demuestra que, aunque sea simple, puede
 ser de mucha utilidad en determinados problemas. Al basarse en la
 distancia entre datos, se comporta bien en problemas donde predictores cercanos
-dan resultados cercanos. El instante \emph{Frame} es un buen ejemplo: en dos
+dan resultados cercanos. % ¿Este es de ese tipo de problemas? ¿Qué
+                         % implica eso con respecto al problema? - JJ
+El instante \emph{Frame} es un buen ejemplo: en dos
 instantes parecidos y con una configuración de la partida parecida, es muy
 probable que el resultado final sea el mismo. Con \emph{KNN} se consiguen
 predicciones con una confianza muy alta, pero lo realmente importante es otro
 hecho: es capaz de realizar estas predicciones sobre partidas muy poco
-desarrolladas. Como se ha comentado en~\ref{cap:resultados}, con sólo 10 minutos
+desarrolladas. Como se ha comentado en~\ref{cap:resultados}, con sólo
+10 minutos % ¿10 minutos es un 1% o un 90%? - JJ
 de juego es capaz de tener un acierto del 90\%. Este hecho nos ofrece una
 solución a un problema comentado en~\ref{cap:introduccion}: el tiempo de
 optimización de un \emph{bot} se vería reducido al no tener que evaluar partidas
 completas, por lo que la creación de este tipo de agentes utilizando
-metaheurísticas apropiadas sería más rápida. No sólo es interesante
+metaheurísticas apropiadas sería más rápida. No sólo es interesante % no es "el problema planteado". Es uno de los objetivos - JJ
 por ahorrar tiempo, sino por utilizar ese mismo tiempo de manera más apropiada:
 el tiempo ahorrado se podría aprovechar para cambiar parámetros de los
 algoritmos y así recorrer el espacio de búsqueda de manera más provechosa para
 el problema.
 
-También se debería destacar, aunque se ha comentado en~\ref{cap:introduccion},
+También se debería destacar, aunque se ha comentado
+en~\ref{cap:introduccion}, % Esto no es una conclusión - JJ
 que el conjunto de datos estudiado es totalmente heterogéneo: se han utilizado
 todas las combinaciones de razas
 posible para entrenar el clasificador, además de un conjunto muy grande de

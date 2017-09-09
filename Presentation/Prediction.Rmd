@@ -1,0 +1,38 @@
+---
+title: "Predicción de resultados de partidas en juegos de estrategia en tiempo real"
+author: "Antonio Álvarez Caballero"
+date: "12 de septiembre de 2017"
+output:
+  ioslides_presentation: default
+  beamer_presentation:
+    theme: "Antibes"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## Introducción
+
+## Objetivos
+
+* Conseguir predicciones fiables y tempranas del ganador de partidas de *StarCraft*.
+    + Conseguir un buen conjunto de datos con potencial para obtener conclusiones.
+    + Crear modelos capaces de sacar información útil. En particular, el ganador de la partida.
+    + Restringir los instantes de tiempo al validar para asegurar que se puede obtener el ganador sin conocer el estado final de la partida.
+    + Comparar los modelos obtenidos y realizar tests estadísticos para asegurar que existen diferencias significativas entre ellos.
+* Determinar por qué un jugador gana a otro.
+    + Extraer características con más ganancia de los modelos que lo permitan.
+
+
+## Selección de los datos
+
+## Preprocesado de datos
+
+## Modelado con Spark
+
+## Resultados
+
+## Conclusiones

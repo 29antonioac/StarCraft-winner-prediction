@@ -7,3 +7,7 @@
 * Hay que mencionar los modelos surrogados, usados en algoritmos evolutivos.
 
 * Los datos no son acumulativos ni se usan deltas. ¿Aceleraría esto la predicción?
+
+* También hay que distinguir en errores tipo I y errores tipo II, falsos positivos y falsos negativos. Predecir que vas a perder si vas a ganar tiene diferente valor que lo contrario, predecir que vas a ganar si vas a perder. En la práctica, ¿cómo vas a usar este resultado?
+
+* ¿Hay un tipo de juego determinado en el que fallen las predicciones?

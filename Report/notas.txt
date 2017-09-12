@@ -1,0 +1,9 @@
+# Notas
+
+* ¿Se entrena con las partidas desordenadas? ¿Si es así, se trata de encontrar un instante determinado en el cual se encuentre la solución? ¿Se puede ver qué características tiene ese instante?
+
+* ¿Por qué el frame se considera importante? ¿No debería ser un valor independiente? ¿Qué pasaría si quitamos el tiempo?
+
+* Hay que mencionar los modelos surrogados, usados en algoritmos evolutivos.
+
+* Los datos no son acumulativos ni se usan deltas. ¿Aceleraría esto la predicción?
